@@ -1,0 +1,170 @@
+version: '3.8'
+
+services:
+  # Main MLPY API Server
+  mlpy-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mlpy-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./experiments:/app/experiments
+    environment:
+      - MLPY_ENV=production
+      - MODEL_PATH=/app/models
+      - DATA_PATH=/app/data
+      - LOG_PATH=/app/logs
+      - REDIS_URL=redis://redis:6379
+      - POSTGRES_URL=postgresql://mlpy:mlpy123@postgres:5432/mlpy
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - mlpy-network
+    restart: unless-stopped
+    command: python -m mlpy.mlops.api_server
+
+  # Model Training Worker
+  mlpy-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mlpy-worker
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - MLPY_ENV=production
+      - WORKER_TYPE=training
+      - REDIS_URL=redis://redis:6379
+      - POSTGRES_URL=postgresql://mlpy:mlpy123@postgres:5432/mlpy
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - mlpy-network
+    restart: unless-stopped
+    command: python -m mlpy.mlops.worker
+
+  # Monitoring Service
+  mlpy-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mlpy-monitor
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./logs:/app/logs
+      - ./experiments:/app/experiments
+    environment:
+      - MLPY_ENV=production
+      - SERVICE_TYPE=monitoring
+      - REDIS_URL=redis://redis:6379
+      - POSTGRES_URL=postgresql://mlpy:mlpy123@postgres:5432/mlpy
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - mlpy-network
+    restart: unless-stopped
+    command: python -m mlpy.mlops.monitor_service
+
+  # Redis for caching and message queue
+  redis:
+    image: redis:7-alpine
+    container_name: mlpy-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - mlpy-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # PostgreSQL for metadata storage
+  postgres:
+    image: postgres:15-alpine
+    container_name: mlpy-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=mlpy
+      - POSTGRES_PASSWORD=mlpy123
+      - POSTGRES_DB=mlpy
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mlpy-network
+    restart: unless-stopped
+
+  # Prometheus for metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: mlpy-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - mlpy-network
+    restart: unless-stopped
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: mlpy-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=mlpy123
+      - GF_INSTALL_PLUGINS=redis-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./config/grafana:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+    networks:
+      - mlpy-network
+    restart: unless-stopped
+
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: mlpy-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/nginx/certs
+    depends_on:
+      - mlpy-api
+      - mlpy-monitor
+      - grafana
+    networks:
+      - mlpy-network
+    restart: unless-stopped
+
+networks:
+  mlpy-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  postgres-data:
+  prometheus-data:
+  grafana-data:

@@ -1,0 +1,37 @@
+# Include the README
+include README.md
+
+# Include the license file
+include LICENSE
+
+# Include the changelog
+include CHANGELOG.md
+
+# Include type hints marker
+include mlpy/py.typed
+
+# Include requirements files
+include requirements.txt
+include requirements-dev.txt
+
+# Include documentation
+recursive-include docs *.rst *.py *.md
+recursive-exclude docs/_build *
+
+# Include examples
+recursive-include examples *.py *.ipynb *.md
+recursive-exclude examples/.ipynb_checkpoints *
+
+# Include tests
+recursive-include tests *.py
+recursive-exclude tests __pycache__ *.pyc
+
+# Exclude unnecessary files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.swp
+global-exclude .DS_Store
+global-exclude __pycache__
+global-exclude .git*
+global-exclude .coverage
+global-exclude .pytest_cache

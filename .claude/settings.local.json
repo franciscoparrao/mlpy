@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest tests/test_tuning_callbacks.py::test_tuner_grid_with_callbacks -v)",
+      "Bash(python:*)"
+    ],
+    "deny": []
+  }
+}

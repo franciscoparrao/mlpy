@@ -1,0 +1,770 @@
+[
+  {
+    "timestamp": "2025-08-20T22:24:26.667583",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.28745401188473624,
+    "num_predictions": 206,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.668170",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 48.52142919229749,
+    "num_predictions": 206,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.668748",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.3279691000272769,
+    "num_predictions": 221,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.669413",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 37.90550473839461,
+    "num_predictions": 221,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.670033",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.26559945203362023,
+    "num_predictions": 187,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.671021",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 21.742508365045985,
+    "num_predictions": 187,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.671817",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2833708611139022,
+    "num_predictions": 230,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.673484",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 24.286004537658222,
+    "num_predictions": 230,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.675125",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2520584494295802,
+    "num_predictions": 393,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.676419",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 49.097295564859834,
+    "num_predictions": 393,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.677450",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2500778765841014,
+    "num_predictions": 260,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.678334",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 49.766346778736526,
+    "num_predictions": 260,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.679283",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.28042422429595376,
+    "num_predictions": 335,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.680300",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 35.74269294896713,
+    "num_predictions": 335,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.681396",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2523062425041416,
+    "num_predictions": 269,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.682380",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 35.74323980775168,
+    "num_predictions": 269,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.683387",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.40466656632136155,
+    "num_predictions": 1270,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.684422",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 118.95022075365836,
+    "num_predictions": 1270,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.685605",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.4456069984217036,
+    "num_predictions": 1050,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.687061",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 111.40703845572054,
+    "num_predictions": 1050,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.688693",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2882461991267163,
+    "num_predictions": 230,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.691063",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 49.49692657420364,
+    "num_predictions": 230,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.693121",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.33599404067363203,
+    "num_predictions": 428,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.694901",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 40.40922615763339,
+    "num_predictions": 428,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.696123",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2565051592985279,
+    "num_predictions": 415,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.697185",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 48.466566117599996,
+    "num_predictions": 415,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.698301",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.3063288217845539,
+    "num_predictions": 445,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.699358",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 31.562495076197482,
+    "num_predictions": 445,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.700534",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.25976721140063835,
+    "num_predictions": 466,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.703308",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 40.52699079536471,
+    "num_predictions": 466,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.706398",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.3183263518825458,
+    "num_predictions": 363,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.709197",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 38.299899733478625,
+    "num_predictions": 363,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.711711",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.25343885211152184,
+    "num_predictions": 149,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.713793",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 47.27961206236346,
+    "num_predictions": 149,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.715165",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.4662522284353982,
+    "num_predictions": 1389,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.716504",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 92.46844304357644,
+    "num_predictions": 1389,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.717884",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.42079416628681887,
+    "num_predictions": 1476,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.719672",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 102.70801311279966,
+    "num_predictions": 1476,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.721291",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.34695846277645587,
+    "num_predictions": 261,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.723936",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 43.253984700833435,
+    "num_predictions": 261,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.726013",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.28951502360018144,
+    "num_predictions": 450,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.727765",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 47.79976597381383,
+    "num_predictions": 450,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.729298",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.3421874235023117,
+    "num_predictions": 314,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.730906",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 22.654775061557586,
+    "num_predictions": 314,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.732548",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.30208342600258237,
+    "num_predictions": 312,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.736323",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 48.835160730480474,
+    "num_predictions": 312,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.739935",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2888677289689482,
+    "num_predictions": 152,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:24:26.742256",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 28.140470953216877,
+    "num_predictions": 152,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.294194",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.28745401188473624,
+    "num_predictions": 206,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.295780",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 48.52142919229749,
+    "num_predictions": 206,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.297552",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.3279691000272769,
+    "num_predictions": 221,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.299161",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 37.90550473839461,
+    "num_predictions": 221,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.300779",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.26559945203362023,
+    "num_predictions": 187,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.302364",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 21.742508365045985,
+    "num_predictions": 187,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.304473",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2833708611139022,
+    "num_predictions": 230,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.306230",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 24.286004537658222,
+    "num_predictions": 230,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.307838",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2520584494295802,
+    "num_predictions": 393,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.310355",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 49.097295564859834,
+    "num_predictions": 393,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.312572",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2500778765841014,
+    "num_predictions": 260,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.314276",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 49.766346778736526,
+    "num_predictions": 260,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.315980",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.28042422429595376,
+    "num_predictions": 335,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.317649",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 35.74269294896713,
+    "num_predictions": 335,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.319975",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2523062425041416,
+    "num_predictions": 269,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.323156",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 35.74323980775168,
+    "num_predictions": 269,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.326238",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.40466656632136155,
+    "num_predictions": 1270,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.328628",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 118.95022075365836,
+    "num_predictions": 1270,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.330690",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.4456069984217036,
+    "num_predictions": 1050,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.332505",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 111.40703845572054,
+    "num_predictions": 1050,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.334502",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2882461991267163,
+    "num_predictions": 230,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.338445",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 49.49692657420364,
+    "num_predictions": 230,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.340681",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.33599404067363203,
+    "num_predictions": 428,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.344267",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 40.40922615763339,
+    "num_predictions": 428,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.347120",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2565051592985279,
+    "num_predictions": 415,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.349983",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 48.466566117599996,
+    "num_predictions": 415,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.353603",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.3063288217845539,
+    "num_predictions": 445,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.356523",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 31.562495076197482,
+    "num_predictions": 445,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.359603",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.25976721140063835,
+    "num_predictions": 466,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.362350",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 40.52699079536471,
+    "num_predictions": 466,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.365175",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.3183263518825458,
+    "num_predictions": 363,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.368286",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 38.299899733478625,
+    "num_predictions": 363,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.370898",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.25343885211152184,
+    "num_predictions": 149,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.373224",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 47.27961206236346,
+    "num_predictions": 149,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.376073",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.4662522284353982,
+    "num_predictions": 1389,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.381528",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 92.46844304357644,
+    "num_predictions": 1389,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.387073",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.42079416628681887,
+    "num_predictions": 1476,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.389434",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 102.70801311279966,
+    "num_predictions": 1476,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.392181",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.34695846277645587,
+    "num_predictions": 261,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.397686",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 43.253984700833435,
+    "num_predictions": 261,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.400666",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.28951502360018144,
+    "num_predictions": 450,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.403296",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 47.79976597381383,
+    "num_predictions": 450,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.406150",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.3421874235023117,
+    "num_predictions": 314,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.409208",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 22.654775061557586,
+    "num_predictions": 314,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.414482",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.30208342600258237,
+    "num_predictions": 312,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.418247",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 48.835160730480474,
+    "num_predictions": 312,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.421048",
+    "model_id": "housing_predictor",
+    "metric_name": "mse",
+    "value": 0.2888677289689482,
+    "num_predictions": 152,
+    "window": "hourly"
+  },
+  {
+    "timestamp": "2025-08-20T22:26:26.423868",
+    "model_id": "housing_predictor",
+    "metric_name": "latency_ms",
+    "value": 28.140470953216877,
+    "num_predictions": 152,
+    "window": "hourly"
+  }
+]

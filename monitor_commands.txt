@@ -1,0 +1,29 @@
+# COMANDOS DE MONITOREO PARA EL BENCHMARK H2O
+
+# 1. Ver si Java/H2O está ejecutándose:
+tasklist | findstr java
+
+# 2. Monitorear continuamente (PowerShell):
+while ($true) { cls; Get-Date; tasklist | findstr java; Start-Sleep -Seconds 5 }
+
+# 3. Ver si se creó el archivo de resultados:
+dir h2o_benchmark*.md
+
+# 4. Monitorear el archivo de resultados (PowerShell):
+while ($true) { 
+    cls
+    Get-Date
+    if (Test-Path "h2o_benchmark_results.md") {
+        Write-Host "BENCHMARK COMPLETADO!" -ForegroundColor Green
+        break
+    } else {
+        Write-Host "Esperando..." -ForegroundColor Yellow
+    }
+    Start-Sleep -Seconds 3
+}
+
+# 5. Ver uso de CPU/Memoria de Java:
+wmic process where name="java.exe" get ProcessId,WorkingSetSize,PageFileUsage,Name
+
+# 6. Ejecutar el monitor Python:
+python monitor_benchmark.py

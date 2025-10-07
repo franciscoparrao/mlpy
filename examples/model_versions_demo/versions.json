@@ -1,0 +1,192 @@
+{
+  "housing_predictor": {
+    "20250820_222319": {
+      "model_id": "housing_predictor",
+      "version": "20250820_222319",
+      "created_at": "2025-08-20T22:23:19.855669",
+      "created_by": "data_scientist",
+      "description": "Initial Random Forest with 50 trees",
+      "metrics": {
+        "mse": 0.25760358244348325,
+        "mae": 0.33065530843023255
+      },
+      "parameters": {
+        "n_estimators": 50
+      },
+      "tags": [
+        "baseline",
+        "production_candidate"
+      ],
+      "file_path": "model_versions_demo\\housing_predictor\\20250820_222319.pkl",
+      "file_hash": "609961edd0507afe6e6a9ff2821b8ee8e7de4c8b1a216c89ac8ad6849e4d42a9",
+      "parent_version": null,
+      "is_active": true,
+      "is_production": false
+    },
+    "20250820_222319_002": {
+      "model_id": "housing_predictor",
+      "version": "20250820_222319_002",
+      "created_at": "2025-08-20T22:23:19.971333",
+      "created_by": "data_scientist",
+      "description": "Improved Random Forest with 100 trees and depth limit",
+      "metrics": {
+        "mse": 0.29662380793446663,
+        "mae": 0.3664278405166405
+      },
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": 10
+      },
+      "tags": [
+        "production",
+        "optimized"
+      ],
+      "file_path": "model_versions_demo\\housing_predictor\\20250820_222319_002.pkl",
+      "file_hash": "24f6c69bd9352087e265f3813176ccca6eae7dbf52708fb25b913ef1baaec35f",
+      "parent_version": "20250820_222319",
+      "is_active": true,
+      "is_production": false
+    },
+    "20250820_222422": {
+      "model_id": "housing_predictor",
+      "version": "20250820_222422",
+      "created_at": "2025-08-20T22:24:23.317024",
+      "created_by": "data_scientist",
+      "description": "Initial Random Forest with 50 trees",
+      "metrics": {
+        "mse": 0.25760358244348325,
+        "mae": 0.33065530843023255
+      },
+      "parameters": {
+        "n_estimators": 50
+      },
+      "tags": [
+        "baseline",
+        "production_candidate"
+      ],
+      "file_path": "model_versions_demo\\housing_predictor\\20250820_222422.pkl",
+      "file_hash": "d96355839cb41a7dbdf2ff9a6ea485d09ef201fadbbd5f3938a6bc0888f9ae4a",
+      "parent_version": null,
+      "is_active": true,
+      "is_production": false
+    },
+    "20250820_222423": {
+      "model_id": "housing_predictor",
+      "version": "20250820_222423",
+      "created_at": "2025-08-20T22:24:23.423511",
+      "created_by": "data_scientist",
+      "description": "Improved Random Forest with 100 trees and depth limit",
+      "metrics": {
+        "mse": 0.29662380793446663,
+        "mae": 0.3664278405166405
+      },
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": 10
+      },
+      "tags": [
+        "optimized",
+        "production"
+      ],
+      "file_path": "model_versions_demo\\housing_predictor\\20250820_222423.pkl",
+      "file_hash": "632a44b9b341a171a7695815452b957f843aa51c36765bac715da64299a6b871",
+      "parent_version": "20250820_222422",
+      "is_active": true,
+      "is_production": false
+    },
+    "20250820_222522": {
+      "model_id": "housing_predictor",
+      "version": "20250820_222522",
+      "created_at": "2025-08-20T22:25:22.812170",
+      "created_by": "data_scientist",
+      "description": "Initial Random Forest with 50 trees",
+      "metrics": {
+        "mse": 0.25760358244348325,
+        "mae": 0.33065530843023255
+      },
+      "parameters": {
+        "n_estimators": 50
+      },
+      "tags": [
+        "baseline",
+        "production_candidate"
+      ],
+      "file_path": "model_versions_demo\\housing_predictor\\20250820_222522.pkl",
+      "file_hash": "b1eeb9f6ad2c172ed6a648b50efe7ca7d8114b0c5eb06508749adbf54bdd4a98",
+      "parent_version": null,
+      "is_active": true,
+      "is_production": false
+    },
+    "20250820_222522_002": {
+      "model_id": "housing_predictor",
+      "version": "20250820_222522_002",
+      "created_at": "2025-08-20T22:25:22.989760",
+      "created_by": "data_scientist",
+      "description": "Improved Random Forest with 100 trees and depth limit",
+      "metrics": {
+        "mse": 0.29662380793446663,
+        "mae": 0.3664278405166405
+      },
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": 10
+      },
+      "tags": [
+        "optimized",
+        "production"
+      ],
+      "file_path": "model_versions_demo\\housing_predictor\\20250820_222522_002.pkl",
+      "file_hash": "4819bc58b1f81dfa1baa45491ba8bb02d8b6ad627f3354e861177c03732dd803",
+      "parent_version": "20250820_222522",
+      "is_active": true,
+      "is_production": false
+    },
+    "20250820_222619": {
+      "model_id": "housing_predictor",
+      "version": "20250820_222619",
+      "created_at": "2025-08-20T22:26:20.179550",
+      "created_by": "data_scientist",
+      "description": "Initial Random Forest with 50 trees",
+      "metrics": {
+        "mse": 0.25760358244348325,
+        "mae": 0.33065530843023255
+      },
+      "parameters": {
+        "n_estimators": 50
+      },
+      "tags": [
+        "baseline",
+        "production_candidate"
+      ],
+      "file_path": "C:\\Users\\gran_\\Documents\\Proyectos\\MLPY\\examples\\model_versions_demo\\housing_predictor\\20250820_222619.pkl",
+      "file_hash": "1c2062cfd643aaee84cdc4e0f4b6775b6dd12eb88878898fba20c205ebc3b2d6",
+      "parent_version": null,
+      "is_active": true,
+      "is_production": false
+    },
+    "20250820_222620": {
+      "model_id": "housing_predictor",
+      "version": "20250820_222620",
+      "created_at": "2025-08-20T22:26:20.369482",
+      "created_by": "data_scientist",
+      "description": "Improved Random Forest with 100 trees and depth limit",
+      "metrics": {
+        "mse": 0.29662380793446663,
+        "mae": 0.3664278405166405
+      },
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": 10
+      },
+      "tags": [
+        "production",
+        "optimized"
+      ],
+      "file_path": "C:\\Users\\gran_\\Documents\\Proyectos\\MLPY\\examples\\model_versions_demo\\housing_predictor\\20250820_222620.pkl",
+      "file_hash": "6af135474ae236484a02f9ac75a2c03e16c85474a57a1526ff9a0fe30feba53f",
+      "parent_version": "20250820_222619",
+      "is_active": true,
+      "is_production": true
+    }
+  }
+}

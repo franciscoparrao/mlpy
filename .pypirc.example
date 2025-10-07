@@ -1,0 +1,17 @@
+# Ejemplo de archivo .pypirc
+# Copia este archivo a ~/.pypirc y actualiza con tus credenciales
+
+[distutils]
+index-servers =
+    pypi
+    testpypi
+
+[pypi]
+repository = https://upload.pypi.org/legacy/
+username = __token__
+password = pypi-AgEIcHlwaS5vcmcCJGxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+[testpypi]
+repository = https://test.pypi.org/legacy/
+username = __token__
+password = pypi-AgENdGVzdC5weXBpLm9yZwIkxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
