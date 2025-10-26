@@ -8,7 +8,7 @@ from .base import LearnerClassifSKLearn
 try:
     from sklearn.linear_model import LogisticRegression
     from sklearn.tree import DecisionTreeClassifier
-    from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+    from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, ExtraTreesClassifier
     from sklearn.svm import SVC
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.naive_bayes import GaussianNB
@@ -229,6 +229,113 @@ class LearnerGradientBoosting(LearnerClassifSKLearn):
             **kwargs
         )
 
+class LearnerAdaBoost(LearnerClassifSKLearn):
+    """ AdaBoost classifier wrapper
+
+    Parameters
+    ----------
+    id : str, optional
+        Unique identifier.
+    predict_type : str, optional
+        Type of prediction ("response" or "prob").
+    estimator : object, optional
+        Base estimator to boost.
+    n_estimators : int, optional
+        Maximum number of estimators.
+    learning_rate : float, optional
+        Weighting applied to each classifier.
+    random_state : int, optional
+        Random seed for reproducibility.
+    **kwargs
+        Additional parameters for AdaBoostClassifier
+    """
+
+    def __init__(
+      self,
+      id: Optional[str] = None,
+      predict_type: str = "response",
+      estimator: Optional[object] = None,
+      n_estimators: int = 50,
+      learning_rate: float = 1.0,
+      random_state: Optional[int] = None,
+      **kwargs
+    ):
+        if not _HAS_SKLEARN:
+            raise ImportError("scikit-learn is required for this learner")
+
+        super().__init__(
+            estimator_class=AdaBoostClassifier,
+            id=id or "adaboost",
+            predict_type=predict_type,
+            estimator=estimator,
+            n_estimators=n_estimators,
+            learning_rate=learning_rate,
+            random_state=random_state,
+            **kwargs
+        )
+
+class LearnerExtraTrees(LearnerClassifSKLearn):
+    """ Extra Trees classifier wrapper
+
+    Parameters
+    ----------
+
+    id : str, optional
+        Unique identifier.
+    predict_type : str, optional
+        Type of prediction ("response" or "prob").
+    n_estimators : int, optional
+        Number of trees.
+    criterion : str, optional
+        Function to measure split quality.
+    max_depth : int, optional
+        Maximum depth of trees.
+    min_samples_split : int, optional
+        Minimum samples required to split.
+    min_samples_leaf : int, optional
+        Minimum samples required at leaf.
+    max_features : str or float, optional
+        Number of features to consider when looking for the best split. Use
+        'sqrt', 'log2', an int, or a float in (0, 1].
+    random_state : int, optional
+        Random seed.
+    n_jobs : int, optional
+        Number of parallel jobs to run for both fit and predict.
+    **kwargs
+        Additional parameters for ExtraTreesClassifier.
+    """
+
+    def __init__(
+        self,
+        id: Optional[str] = None,
+        predict_type: str = "response",
+        n_estimators: int = 100,
+        criterion: str = 'gini',
+        max_depth: Optional[int] = None,
+        min_samples_split: int = 2,
+        min_samples_leaf: int = 1,
+        max_features: str = 'sqrt',
+        random_state: Optional[int] = None,
+        n_jobs: Optional[int] = None,
+        **kwargs
+    ):
+        if not _HAS_SKLEARN:
+            raise ImportError("scikit-learn is required for this learner")
+
+        super().__init__(
+            estimator_class=ExtraTreesClassifier,
+            id=id or "extra_trees",
+            predict_type=predict_type,
+            n_estimators=n_estimators,
+            criterion=criterion,
+            max_depth=max_depth,
+            min_samples_split=min_samples_split,
+            min_samples_leaf=min_samples_leaf,
+            max_features=max_features,
+            random_state=random_state,
+            n_jobs=n_jobs,
+            **kwargs
+        )
 
 class LearnerSVM(LearnerClassifSKLearn):
     """Support Vector Machine classifier wrapper.

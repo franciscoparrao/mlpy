@@ -10,7 +10,7 @@ try:
         LinearRegression, Ridge, Lasso, ElasticNet
     )
     from sklearn.tree import DecisionTreeRegressor
-    from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+    from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, AdaBoostRegressor, ExtraTreesRegressor
     from sklearn.svm import SVR
     from sklearn.neighbors import KNeighborsRegressor
     from sklearn.neural_network import MLPRegressor
@@ -368,6 +368,104 @@ class LearnerGradientBoostingRegressor(LearnerRegrSKLearn):
             **kwargs
         )
 
+class LearnerAdaBoostRegressor(LearnerRegrSKLearn):
+    """ AdaBoost Regressor wrapper.
+
+    Parameters
+    ----------
+    id : str, optional
+        Unique identifier.
+    estimator : object, optional
+        Base estimator to boost.
+    n_estimators : int, optional
+        Number of boosting stages.
+    learning_rate : float, optional
+        Learning rate.
+    random_state : int, optional
+        Random seed.
+    **kwargs
+        Additional parameters for AdaBoostRegressor.
+    """
+
+    def __init__(
+        self,
+        id: Optional[str] = None,
+        estimator: Optional[object] = None,
+        n_estimators: int = 50,
+        learning_rate: float = 1.0,
+        random_state: Optional[int] = None,
+        **kwargs
+    ):
+        if not _HAS_SKLEARN:
+            raise ImportError("scikit-learn is required for this learner")
+
+        super().__init__(
+            estimator_class=AdaBoostRegressor,
+            id=id or "adaboost_regr",
+            estimator=estimator,
+            n_estimators=n_estimators,
+            learning_rate=learning_rate,
+            random_state=random_state,
+            **kwargs
+        )
+
+class LearnerExtraTreesRegressor(LearnerRegrSKLearn):
+    """ Extra Trees Regressor wrapper.
+
+    Parameters
+    ----------
+    id : str, optional
+        Unique identifier.
+    n_estimators : int, optional
+        Number of trees.
+    criterion : str, optional
+        Function to measure split quality.
+    max_depth : int, optional  
+        Maximum depth of trees.
+    min_samples_split : int, optional
+        Minimum samples required to split.
+    min_samples_leaf : int, optional
+        Minimum samples required at leaf.
+    max_features : float or str, optional
+        Number of features to consider when looking for the best split. Use a
+        float in (0, 1], an int, or strings like 'sqrt'/'log2'.
+    random_state : int, optional
+        Random seed.
+    n_jobs : int, optional
+        Number of parallel jobs.
+    **kwargs
+        Additional parameters for ExtraTreesRegressor.
+    """
+
+    def __init__(
+        self,
+        id: Optional[str] = None,
+        n_estimators: int = 100,
+        criterion: str = 'squared_error',
+        max_depth: Optional[int] = None,
+        min_samples_split: int = 2,
+        min_samples_leaf: int = 1,
+        max_features: float = 1.0,
+        random_state: Optional[int] = None,
+        n_jobs: Optional[int] = None,
+        **kwargs
+    ):
+        if not _HAS_SKLEARN:
+            raise ImportError("scikit-learn is required for this learner")
+
+        super().__init__(
+            estimator_class=ExtraTreesRegressor,
+            id=id or "extra_trees_regr",
+            n_estimators=n_estimators,
+            criterion=criterion,
+            max_depth=max_depth,
+            min_samples_split=min_samples_split,
+            min_samples_leaf=min_samples_leaf,
+            max_features=max_features,
+            random_state=random_state,
+            n_jobs=n_jobs,
+            **kwargs
+        )
 
 class LearnerSVR(LearnerRegrSKLearn):
     """Support Vector Regression wrapper.
