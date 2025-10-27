@@ -152,7 +152,7 @@ class TestPredictionClassif:
     def test_invalid_inputs(self, binary_task):
         """Test validation of invalid inputs."""
         # No predictions provided
-        with pytest.raises(ValueError, match="at least one"):
+        with pytest.raises(ValueError, match="At least one"):
             PredictionClassif(row_ids=[1, 2])
         
         # Length mismatch

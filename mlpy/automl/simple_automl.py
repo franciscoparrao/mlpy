@@ -207,23 +207,23 @@ class SimpleAutoML:
         self._leaderboard = []
         
         if self.verbose:
-            print("🚀 Starting SimpleAutoML...")
-            print(f"⏰ Time limit: {self.time_limit}s")
-            print(f"🎯 Target: {target}")
-            print(f"📊 Data shape: {data.shape}")
+            print("[*] Starting SimpleAutoML...")
+            print(f"[*] Time limit: {self.time_limit}s")
+            print(f"[*] Target: {target}")
+            print(f"[*] Data shape: {data.shape}")
         
         # 1. Create task
         task = self._create_task(data, target, task_type)
         
         if self.verbose:
-            print(f"📋 Task type: {task.__class__.__name__}")
-            print(f"🔧 Features: {len(task.feature_names)}")
+            print(f"[TASK] Task type: {task.__class__.__name__}")
+            print(f"[FEAT] Features: {len(task.feature_names)}")
         
         # 1.5. Meta-learning analysis (if enabled)
         meta_info = None
         if self._meta_learner is not None:
             if self.verbose:
-                print("🧠 Analyzing dataset characteristics...")
+                print("[ANALYZE] Analyzing dataset characteristics...")
             meta_info = self._analyze_with_meta_learning(task)
         
         # 2. Split data
@@ -231,7 +231,11 @@ class SimpleAutoML:
         
         # 3. Build pipelines and search
         best_learner, best_score = self._search_pipelines(train_task)
-        
+
+        # Check if any model was successfully trained
+        if best_learner is None:
+            raise RuntimeError("No models could be trained successfully. All pipelines failed.")
+
         # 4. Final evaluation
         final_score = self._final_evaluation(best_learner, test_task)
         
@@ -250,10 +254,10 @@ class SimpleAutoML:
         )
         
         if self.verbose:
-            print(f"\n✅ AutoML completed!")
-            print(f"⭐ Best score: {final_score:.4f}")
-            print(f"⏱️  Total time: {result.training_time:.1f}s")
-            print(f"🔍 Models tried: {len(self._leaderboard)}")
+            print(f"\n[DONE] AutoML completed!")
+            print(f"[BEST] Best score: {final_score:.4f}")
+            print(f"[TIME] Total time: {result.training_time:.1f}s")
+            print(f"[INFO] Models tried: {len(self._leaderboard)}")
         
         return result
         
@@ -292,15 +296,16 @@ class SimpleAutoML:
         if meta_info and 'cv_strategy' in meta_info:
             cv_strategy = meta_info['cv_strategy']
             if cv_strategy['method'] == 'holdout':
-                ratio = cv_strategy.get('ratio', self.test_size)
+                # cv_strategy may provide train ratio directly
+                ratio = cv_strategy.get('ratio', 1.0 - self.test_size)
                 stratify = cv_strategy.get('stratify', isinstance(task, TaskClassif))
             else:
-                ratio = self.test_size
+                ratio = 1.0 - self.test_size  # Convert test_size to train_size
                 stratify = isinstance(task, TaskClassif)
         else:
-            ratio = self.test_size
+            ratio = 1.0 - self.test_size  # Convert test_size to train_size for ResamplingHoldout
             stratify = isinstance(task, TaskClassif)
-        
+
         holdout = ResamplingHoldout(ratio=ratio, stratify=stratify)
         instance = holdout.instantiate(task)
         
@@ -315,7 +320,7 @@ class SimpleAutoML:
     def _search_pipelines(self, train_task: Task) -> tuple:
         """Search for best pipeline configuration."""
         if self.verbose:
-            print(f"\n🔍 Starting pipeline search...")
+            print(f"\n[SEARCH] Starting pipeline search...")
         
         best_learner = None
         best_score = -float('inf') if isinstance(train_task, TaskRegr) else 0.0
@@ -338,7 +343,7 @@ class SimpleAutoML:
                 try:
                     # Build pipeline
                     graph_learner = self._build_pipeline(
-                        train_task, learner_class, prep_config
+                        train_task, learner_class, param_set, prep_config
                     )
                     
                     # Evaluate
@@ -358,7 +363,7 @@ class SimpleAutoML:
                         best_learner = graph_learner
                         
                         if self.verbose:
-                            print(f"⭐ New best: {score:.4f} ({learner_name}_{prep_config['name']})")
+                            print(f"[BEST] New best: {score:.4f} ({learner_name}_{prep_config['name']})")
                     
                     models_tried += 1
                     
@@ -368,44 +373,60 @@ class SimpleAutoML:
                         
                 except Exception as e:
                     if self.verbose:
-                        print(f"⚠️  Failed {learner_name}_{prep_config['name']}: {str(e)[:50]}")
+                        print(f"[WARN] Failed {learner_name}_{prep_config['name']}: {str(e)[:50]}")
                     continue
         
         return best_learner, best_score
     
     def _get_base_learners(self, task: Task) -> List[tuple]:
         """Get list of base learners to try."""
+        from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor, GradientBoostingClassifier, GradientBoostingRegressor
+        from sklearn.linear_model import LogisticRegression, LinearRegression
+        from sklearn.svm import SVC, SVR
+
         learners = []
-        
+
         if isinstance(task, TaskClassif):
             # Classification learners
             learners.extend([
-                ("RandomForest", LearnerClassifSklearn, 
-                 {"classifier": "RandomForestClassifier", "n_estimators": 100, "random_state": self.random_state}),
-                ("XGBoost", LearnerClassifSklearn,
-                 {"classifier": "XGBClassifier", "random_state": self.random_state}),
+                ("RandomForest", LearnerClassifSklearn,
+                 {"estimator": RandomForestClassifier(n_estimators=100, random_state=self.random_state)}),
                 ("LogisticRegression", LearnerClassifSklearn,
-                 {"classifier": "LogisticRegression", "random_state": self.random_state}),
+                 {"estimator": LogisticRegression(random_state=self.random_state, max_iter=1000)}),
                 ("SVM", LearnerClassifSklearn,
-                 {"classifier": "SVC", "random_state": self.random_state, "probability": True}),
+                 {"estimator": SVC(random_state=self.random_state, probability=True)}),
                 ("GradientBoosting", LearnerClassifSklearn,
-                 {"classifier": "GradientBoostingClassifier", "random_state": self.random_state}),
+                 {"estimator": GradientBoostingClassifier(random_state=self.random_state)}),
             ])
+
+            # Try XGBoost if available
+            try:
+                from xgboost import XGBClassifier
+                learners.append(("XGBoost", LearnerClassifSklearn,
+                               {"estimator": XGBClassifier(random_state=self.random_state, use_label_encoder=False, eval_metric='logloss')}))
+            except ImportError:
+                pass
         else:
             # Regression learners
             learners.extend([
                 ("RandomForest", LearnerRegrSklearn,
-                 {"regressor": "RandomForestRegressor", "n_estimators": 100, "random_state": self.random_state}),
-                ("XGBoost", LearnerRegrSklearn,
-                 {"regressor": "XGBRegressor", "random_state": self.random_state}),
+                 {"estimator": RandomForestRegressor(n_estimators=100, random_state=self.random_state)}),
                 ("LinearRegression", LearnerRegrSklearn,
-                 {"regressor": "LinearRegression"}),
+                 {"estimator": LinearRegression()}),
                 ("SVR", LearnerRegrSklearn,
-                 {"regressor": "SVR"}),
+                 {"estimator": SVR()}),
                 ("GradientBoosting", LearnerRegrSklearn,
-                 {"regressor": "GradientBoostingRegressor", "random_state": self.random_state}),
+                 {"estimator": GradientBoostingRegressor(random_state=self.random_state)}),
             ])
-        
+
+            # Try XGBoost if available
+            try:
+                from xgboost import XGBRegressor
+                learners.append(("XGBoost", LearnerRegrSklearn,
+                               {"estimator": XGBRegressor(random_state=self.random_state)}))
+            except ImportError:
+                pass
+
         return learners
     
     def _get_preprocessing_configs(self, task: Task) -> List[Dict]:
@@ -433,18 +454,18 @@ class SimpleAutoML:
         
         return configs
     
-    def _build_pipeline(self, task: Task, learner_class, prep_config: Dict) -> GraphLearner:
+    def _build_pipeline(self, task: Task, learner_class, param_set: Dict, prep_config: Dict) -> GraphLearner:
         """Build a pipeline with specified configuration."""
         graph = Graph()
         current_id = "input"
-        
+
         # Add preprocessing steps
         if prep_config.get("impute", False):
             graph.add_pipeop(PipeOpImpute(id="impute"))
             if current_id != "input":
                 graph.add_edge("input", current_id, "impute", "input")
             current_id = "impute"
-        
+
         if prep_config.get("scale", False):
             graph.add_pipeop(PipeOpScale(id="scale"))
             if current_id != "input":
@@ -452,7 +473,7 @@ class SimpleAutoML:
             else:
                 graph.add_edge("input", "", "scale", "input")
             current_id = "scale"
-        
+
         if prep_config.get("feature_eng", False):
             # Add numeric feature engineering
             graph.add_pipeop(AutoFeaturesNumeric(id="feat_eng_num"))
@@ -461,7 +482,7 @@ class SimpleAutoML:
             else:
                 graph.add_edge("input", "", "feat_eng_num", "input")
             current_id = "feat_eng_num"
-        
+
         if prep_config.get("feature_sel", False):
             # Add feature selection
             n_features = min(50, max(5, len(task.feature_names) // 2))
@@ -471,9 +492,9 @@ class SimpleAutoML:
             else:
                 graph.add_edge("input", "", "filter", "input")
             current_id = "filter"
-        
-        # Add learner
-        learner = learner_class(id="learner")
+
+        # Add learner with parameters
+        learner = learner_class(id="learner", **param_set)
         graph.add_pipeop(learner)
         
         if current_id != "input":
@@ -562,7 +583,7 @@ class SimpleAutoML:
         meta_summary = self._meta_learner.get_meta_summary(characteristics)
         
         if self.verbose:
-            print(f"📊 Dataset characteristics:")
+            print(f"[DATA] Dataset characteristics:")
             print(f"   • Size: {characteristics.size_category} ({characteristics.n_samples:,} samples)")
             print(f"   • Features: {characteristics.n_features} ({characteristics.n_numeric} numeric)")
             print(f"   • Complexity: {characteristics.complexity_category}")
@@ -571,13 +592,13 @@ class SimpleAutoML:
                 print(f"   • Classes: {characteristics.n_classes}")
             
             if meta_summary['insights']:
-                print(f"🔍 Key insights:")
+                print(f"[SEARCH] Key insights:")
                 for insight in meta_summary['insights'][:3]:  # Show top 3 insights
                     print(f"   • {insight}")
             
             # Show algorithm recommendations
             algorithms = meta_summary['algorithms'][:3]  # Top 3
-            print(f"🎯 Recommended algorithms:")
+            print(f"[TARGET] Recommended algorithms:")
             for alg, score in algorithms:
                 print(f"   • {alg} (priority: {score:.1f})")
         

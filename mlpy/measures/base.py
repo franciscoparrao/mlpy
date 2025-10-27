@@ -65,7 +65,12 @@ class Measure(MLPYObject):
         self.predict_sets = predict_sets if predict_sets is not None else {'test'}
         self.task_type = task_type
         self.average = average
-        
+
+    @property
+    def higher_better(self) -> bool:
+        """Whether higher values are better (opposite of minimize)."""
+        return not self.minimize if self.minimize is not None else True
+
     @abstractmethod
     def _score(self, prediction: Prediction, task=None, **kwargs) -> float:
         """Calculate the measure score.
@@ -182,12 +187,12 @@ class Measure(MLPYObject):
     
     def is_applicable(self, task) -> bool:
         """Check if this measure is applicable to a given task.
-        
+
         Parameters
         ----------
         task : Task
             The task to check compatibility with.
-            
+
         Returns
         -------
         bool
@@ -195,7 +200,10 @@ class Measure(MLPYObject):
         """
         # Check task type compatibility
         if hasattr(task, 'task_type'):
-            return task.task_type == self.task_type
+            # Extract base task type (spatial tasks have _spatial suffix)
+            # e.g., 'regr_spatial' -> 'regr', 'classif_spatial' -> 'classif'
+            base_task_type = task.task_type.replace('_spatial', '')
+            return base_task_type == self.task_type
         return False
     
     def aggregate(self, scores: List[float]) -> Dict[str, float]:

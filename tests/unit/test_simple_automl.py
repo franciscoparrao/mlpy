@@ -79,8 +79,8 @@ class TestAutoMLResult:
         from sklearn.tree import DecisionTreeClassifier
         
         # Crear learner real
-        real_learner = LearnerClassifSklearn(classifier="DecisionTreeClassifier")
-        real_learner._model = DecisionTreeClassifier()  # Modelo simple para serializar
+        from sklearn.tree import DecisionTreeClassifier
+        real_learner = LearnerClassifSklearn(estimator=DecisionTreeClassifier())
         
         result = AutoMLResult(
             best_learner=real_learner,
@@ -335,7 +335,7 @@ class TestSimpleAutoML:
         mock_graphlearner = Mock()
         mock_graphlearner_class.return_value = mock_graphlearner
         
-        result = automl._build_pipeline(task, mock_learner, config_minimal)
+        result = automl._build_pipeline(task, mock_learner, {}, config_minimal)
         
         # Verificar que se creó el graph y se añadieron operadores
         assert mock_graph_class.called

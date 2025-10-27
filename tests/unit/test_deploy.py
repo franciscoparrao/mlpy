@@ -129,8 +129,8 @@ class TestMLPYModelServer:
             task = TaskClassif(df, target="target")
             learner = LearnerClassifSklearn(LogisticRegression())
             learner.train(task)
-            learner.task_type = "classification"
-            
+            # task_type is already set via property in LearnerClassifSklearn
+
             # Registrar modelo
             registry.register_model(
                 model=learner,
@@ -201,10 +201,10 @@ class TestMLPYModelServer:
         server = MLPYModelServer(registry_path=temp_registry)
         
         info = server.get_model_info("test_model")
-        
+
         assert info["name"] == "test_model"
         assert "version" in info
-        assert info["task_type"] == "classification"
+        assert info["task_type"] == "classif"  # MLPY uses "classif" internally
         assert info["metrics"]["accuracy"] == 0.9
     
     def test_list_models(self, temp_registry):
@@ -338,28 +338,36 @@ class TestMLPYClient:
     def test_list_models(self, mock_server):
         """Test listar modelos."""
         mock_get, _ = mock_server
-        mock_get.return_value.json.return_value = ["model1", "model2"]
-        
+        # First call is health check, second call is list_models
+        mock_get.return_value.json.side_effect = [
+            {"status": "healthy", "version": "0.1.0", "models_loaded": 1, "uptime": 100.0},
+            ["model1", "model2"]
+        ]
+
         client = MLPYClient()
         models = client.list_models()
-        
+
         assert models == ["model1", "model2"]
     
     def test_get_model_info(self, mock_server):
         """Test obtener información del modelo."""
         mock_get, _ = mock_server
-        mock_get.return_value.json.return_value = {
-            "name": "test_model",
-            "version": "1.0.0",
-            "task_type": "classification",
-            "features": ["f1", "f2"]
-        }
-        
+        # First call is health check, second call is get_model_info
+        mock_get.return_value.json.side_effect = [
+            {"status": "healthy", "version": "0.1.0", "models_loaded": 1, "uptime": 100.0},
+            {
+                "name": "test_model",
+                "version": "1.0.0",
+                "task_type": "classif",  # MLPY uses "classif" internally
+                "features": ["f1", "f2"]
+            }
+        ]
+
         client = MLPYClient()
         info = client.get_model_info("test_model")
-        
+
         assert info["name"] == "test_model"
-        assert info["task_type"] == "classification"
+        assert info["task_type"] == "classif"
     
     def test_error_handling(self, mock_server):
         """Test manejo de errores."""

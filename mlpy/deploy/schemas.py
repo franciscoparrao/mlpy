@@ -6,7 +6,7 @@ Define los modelos de datos para requests y responses de la API.
 
 from typing import Dict, List, Optional, Any, Union
 from datetime import datetime
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, model_validator
 import numpy as np
 
 
@@ -198,13 +198,13 @@ class BatchPredictionRequest(BaseModel):
     model_version: Optional[str] = None
     async_mode: bool = False
     callback_url: Optional[str] = None
-    
-    @validator('callback_url')
-    def validate_callback(cls, v, values):
+
+    @model_validator(mode='after')
+    def validate_callback(self):
         """Valida que callback_url se provea si async_mode es True."""
-        if values.get('async_mode') and not v:
+        if self.async_mode and not self.callback_url:
             raise ValueError("callback_url required when async_mode is True")
-        return v
+        return self
 
 
 class BatchPredictionResponse(BaseModel):

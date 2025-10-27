@@ -169,7 +169,7 @@ class TestMonitoring:
         task = TaskClassif(df, target="target")
         learner = LearnerClassifSklearn(LogisticRegression(random_state=42))
         learner.train(task)
-        learner.task_type = "classification"  # Set task type
+        # task_type is already set via property in LearnerClassifSklearn
         return learner
     
     @pytest.fixture
