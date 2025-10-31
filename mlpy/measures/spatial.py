@@ -20,9 +20,18 @@ from .base import MeasureClassif
 
 class MeasureSpatialAccuracy(MeasureClassif):
     """Accuracy measure for spatial classification tasks.
-    
-    This measure computes standard accuracy but is explicitly marked
-    as compatible with spatial task types.
+
+    This measure computes standard accuracy with `sklearn.metrics.accuracy_score`
+    and marks it as compatible with spatial tasks.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.spatial import MeasureSpatialAccuracy
+    >>> y_true = np.array([0, 0, 1, 1])
+    >>> y_pred = np.array([0, 1, 1, 1])
+    >>> MeasureSpatialAccuracy().score(y_true, y_pred)
+    0.75
     """
     
     def __init__(self):
@@ -41,7 +50,25 @@ class MeasureSpatialAccuracy(MeasureClassif):
 
 
 class MeasureSpatialAUC(MeasureClassif):
-    """Area Under ROC Curve for spatial classification tasks."""
+    """Area Under the ROC Curve (AUC) for spatial classification.
+
+    Uses ``sklearn.metrics.roc_auc_score``. For binary problems, expects
+    probabilities for the positive class; for multiclass, computes weighted
+    one-vs-rest AUC.
+
+    Examples
+    --------
+    Binary (non-perfect AUC):
+
+    >>> import numpy as np, pandas as pd
+    >>> from mlpy.measures.spatial import MeasureSpatialAUC
+    >>> from mlpy.predictions import PredictionClassif
+    >>> y_true = np.array([0, 0, 1, 1])
+    >>> prob = pd.DataFrame({0: [0.9, 0.3, 0.4, 0.1], 1: [0.1, 0.7, 0.6, 0.9]})
+    >>> pred = PredictionClassif(task=None, learner_id='demo', row_ids=[0,1,2,3], truth=y_true, prob=prob)
+    >>> round(MeasureSpatialAUC().score(pred), 2)
+    0.75
+    """
     
     def __init__(self):
         super().__init__(
@@ -60,7 +87,7 @@ class MeasureSpatialAUC(MeasureClassif):
             
         # Binary classification
         if prediction.prob.shape[1] == 2:
-            return roc_auc_score(prediction.truth, prediction.prob[:, 1])
+            return roc_auc_score(prediction.truth, prediction.prob.iloc[:, 1])
         
         # Multiclass classification
         try:
@@ -75,7 +102,20 @@ class MeasureSpatialAUC(MeasureClassif):
 
 
 class MeasureSpatialF1(MeasureClassif):
-    """F1 Score for spatial classification tasks."""
+    """F1 score for spatial classification.
+
+    Harmonic mean of precision and recall. Uses weighted averaging for
+    multiclass problems.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.spatial import MeasureSpatialF1
+    >>> y_true = np.array([0, 0, 1, 1])
+    >>> y_pred = np.array([0, 1, 1, 1])
+    >>> round(MeasureSpatialF1().score(y_true, y_pred), 2)
+    0.8
+    """
     
     def __init__(self):
         super().__init__(
@@ -95,7 +135,20 @@ class MeasureSpatialF1(MeasureClassif):
 
 
 class MeasureSpatialPrecision(MeasureClassif):
-    """Precision for spatial classification tasks."""
+    """Precision for spatial classification.
+
+    Fraction of predicted positives that are correct. Uses weighted averaging
+    for multiclass problems.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.spatial import MeasureSpatialPrecision
+    >>> y_true = np.array([0, 0, 1, 1])
+    >>> y_pred = np.array([0, 1, 1, 1])
+    >>> round(MeasureSpatialPrecision().score(y_true, y_pred), 2)
+    0.67
+    """
     
     def __init__(self):
         super().__init__(
@@ -120,7 +173,20 @@ class MeasureSpatialPrecision(MeasureClassif):
 
 
 class MeasureSpatialRecall(MeasureClassif):
-    """Recall for spatial classification tasks."""
+    """Recall for spatial classification.
+
+    Fraction of actual positives that are recovered. Uses weighted averaging
+    for multiclass problems.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.spatial import MeasureSpatialRecall
+    >>> y_true = np.array([0, 0, 1, 1])
+    >>> y_pred = np.array([0, 1, 1, 1])
+    >>> MeasureSpatialRecall().score(y_true, y_pred)
+    1.0
+    """
     
     def __init__(self):
         super().__init__(
@@ -145,7 +211,20 @@ class MeasureSpatialRecall(MeasureClassif):
 
 
 class MeasureSpatialMCC(MeasureClassif):
-    """Matthews Correlation Coefficient for spatial classification tasks."""
+    """Matthews correlation coefficient for spatial classification.
+
+    Balanced measure even with class imbalance; ranges from -1 (total
+    disagreement) to 1 (perfect agreement).
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.spatial import MeasureSpatialMCC
+    >>> y_true = np.array([0, 0, 1, 1])
+    >>> y_pred = np.array([0, 1, 1, 1])
+    >>> round(MeasureSpatialMCC().score(y_true, y_pred), 3)
+    0.577
+    """
     
     def __init__(self):
         super().__init__(
