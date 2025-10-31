@@ -1,10 +1,4 @@
-"""
-Spatial measures for MLPY.
-
-This module provides performance measures specifically designed for 
-spatial classification and regression tasks, accounting for spatial 
-autocorrelation and geographic structure in the data.
-"""
+"""Spatial measures for MLPY."""
 
 import numpy as np
 from sklearn.metrics import (

@@ -29,6 +29,26 @@ class ResamplingBootstrap(Resampling):
         Whether to stratify bootstrap samples by target variable.
     seed : int, optional
         Random seed for reproducibility.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from mlpy.tasks import TaskClassif
+    >>> df = pd.DataFrame({'x': list(range(10)), 'y': [0,1]*5})
+    >>> task = TaskClassif(df, target='y')
+    >>> boot = ResamplingBootstrap(iters=2, ratio=0.8, oob=True, seed=42)
+    >>> boot.instantiate(task)
+    <ResamplingBootstrap[instantiated]:bootstrap>
+    >>> [len(boot.train_set(i)) for i in range(2)]
+    [8, 8]
+    >>> all(len(boot.test_set(i)) > 0 for i in range(2))
+    True
+    
+    Notes
+    -----
+    - Bootstrap allows duplicate IDs in the training set.
+    - With ``oob=True``, the test set size varies by iteration and can be empty
+      in rare cases; an emergency small test subset is created in that case.
     """
     
     def __init__(
