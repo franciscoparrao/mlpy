@@ -10,6 +10,8 @@ from .classification import (
     LearnerDecisionTree,
     LearnerRandomForest,
     LearnerGradientBoosting,
+    LearnerAdaBoost,
+    LearnerExtraTrees,
     LearnerSVM,
     LearnerKNN,
     LearnerNaiveBayes,
@@ -23,6 +25,8 @@ from .regression import (
     LearnerDecisionTreeRegressor,
     LearnerRandomForestRegressor,
     LearnerGradientBoostingRegressor,
+    LearnerAdaBoostRegressor,
+    LearnerExtraTreesRegressor,
     LearnerSVR,
     LearnerKNNRegressor,
     LearnerMLPRegressor
@@ -32,6 +36,8 @@ from .auto_wrap import auto_sklearn
 # Aliases for compatibility with registry naming
 LearnerRandomForestClassifier = LearnerRandomForest
 LearnerGradientBoostingClassifier = LearnerGradientBoosting
+LearnerAdaBoostClassifier = LearnerAdaBoost
+LearnerExtraTreesClassifier = LearnerExtraTrees
 LearnerSVMClassifier = LearnerSVM
 LearnerKNNClassifier = LearnerKNN
 LearnerDecisionTreeClassifier = LearnerDecisionTree
@@ -45,6 +51,8 @@ __all__ = [
     "LearnerDecisionTree",
     "LearnerRandomForest",
     "LearnerGradientBoosting",
+    "LearnerAdaBoost",
+    "LearnerExtraTrees",
     "LearnerSVM",
     "LearnerKNN",
     "LearnerNaiveBayes",
@@ -58,6 +66,8 @@ __all__ = [
     "LearnerDecisionTreeRegressor",
     "LearnerRandomForestRegressor",
     "LearnerGradientBoostingRegressor",
+    "LearnerAdaBoostRegressor",
+    "LearnerExtraTreesRegressor",
     "LearnerSVR",
     "LearnerKNNRegressor",
     "LearnerMLPRegressor",
@@ -68,6 +78,8 @@ __all__ = [
     # Aliases for compatibility
     "LearnerRandomForestClassifier",
     "LearnerGradientBoostingClassifier",
+    "LearnerAdaBoostClassifier",
+    "LearnerExtraTreesClassifier",
     "LearnerSVMClassifier",
     "LearnerKNNClassifier",
     "LearnerDecisionTreeClassifier"

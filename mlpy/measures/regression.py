@@ -12,12 +12,32 @@ from ..predictions import PredictionRegr
 class MeasureRegrMSE(MeasureRegr):
     """Mean Squared Error.
     
-    Calculates the average of squared differences between predictions and true values.
+    Wraps sklearn's mean_squared_error with MLPY's unified interface. Average
+    squared difference between predictions and truth; lower is better.
     
     Parameters
     ----------
     squared : bool, default=True
         If True, returns MSE. If False, returns RMSE.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.regression import MeasureRegrMSE
+    >>> y_true = np.array([3, -0.5, 2, 7])
+    >>> y_pred = np.array([2.5,  0.0, 2, 8])
+    >>> round(MeasureRegrMSE().score(y_true, y_pred), 3)
+    0.375
+
+    Notes
+    -----
+    Requires response predictions (numeric values).
+
+    See Also
+    --------
+    MeasureRegrRMSE : Root mean squared error
+    MeasureRegrMAE : Mean absolute error
+    MeasureRegrR2 : Coefficient of determination
     """
     
     def __init__(self, squared: bool = True):
@@ -48,7 +68,23 @@ class MeasureRegrMSE(MeasureRegr):
 
 @register_measure
 class MeasureRegrRMSE(MeasureRegrMSE):
-    """Root Mean Squared Error."""
+    """Root Mean Squared Error.
+
+    Square root of MSE; preserves units of the target.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.regression import MeasureRegrRMSE
+    >>> y_true = np.array([3, -0.5, 2, 7])
+    >>> y_pred = np.array([2.5,  0.0, 2, 8])
+    >>> float(round(MeasureRegrRMSE().score(y_true, y_pred), 3))
+    0.612
+
+    Notes
+    -----
+    Equivalent to ``sqrt(MSE)``.
+    """
     
     def __init__(self):
         super().__init__(squared=False)
@@ -58,7 +94,26 @@ class MeasureRegrRMSE(MeasureRegrMSE):
 class MeasureRegrMAE(MeasureRegr):
     """Mean Absolute Error.
     
-    Calculates the average of absolute differences between predictions and true values.
+    Wraps sklearn's mean_absolute_error. Average absolute difference between
+    predictions and truth; robust to a few large errors compared to MSE.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.regression import MeasureRegrMAE
+    >>> y_true = np.array([3, -0.5, 2, 7])
+    >>> y_pred = np.array([2.5,  0.0, 2, 8])
+    >>> MeasureRegrMAE().score(y_true, y_pred)
+    0.5
+
+    Notes
+    -----
+    Requires response predictions (numeric values).
+
+    See Also
+    --------
+    MeasureRegrMedianAE : Median absolute error (more robust)
+    MeasureRegrMSE : Mean squared error
     """
     
     def __init__(self):
@@ -88,13 +143,31 @@ class MeasureRegrMAE(MeasureRegr):
 class MeasureRegrMAPE(MeasureRegr):
     """Mean Absolute Percentage Error.
     
-    Calculates the average of absolute percentage differences.
-    Note: undefined for true values of 0.
+    Wraps the mean absolute percentage error. Average absolute percentage
+    difference; undefined at true=0 (entries near 0 are excluded by eps).
     
     Parameters
     ----------
     eps : float, default=1e-8
         Small value to avoid division by zero.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.regression import MeasureRegrMAPE
+    >>> y_true = np.array([1.0, 1.0, 2.0, 3.0])
+    >>> y_pred = np.array([1.1, 0.9, 2.2, 2.7])
+    >>> float(round(MeasureRegrMAPE().score(y_true, y_pred), 1))
+    10.0
+
+    Notes
+    -----
+    Values with |truth| <= eps are ignored to avoid division by zero.
+
+    See Also
+    --------
+    MeasureRegrMAE : Absolute error in original units
+    MeasureRegrMSLE : Squared log error for relative differences
     """
     
     def __init__(self, eps: float = 1e-8):
@@ -128,7 +201,20 @@ class MeasureRegrMAPE(MeasureRegr):
 class MeasureRegrR2(MeasureRegr):
     """Coefficient of determination (R²).
     
-    Proportion of variance in the dependent variable predictable from the independent variable(s).
+    Proportion of variance in the target explained by the model.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.regression import MeasureRegrR2
+    >>> y_true = np.array([1, 2, 3, 4])
+    >>> y_pred = np.array([0.6, 1.9, 3.1, 4.2])
+    >>> round(MeasureRegrR2().score(y_true, y_pred), 3)
+    0.956
+
+    Notes
+    -----
+    Requires at least 2 valid samples; can be negative for poor fits.
     """
     
     def __init__(self):
@@ -162,7 +248,17 @@ class MeasureRegrR2(MeasureRegr):
 class MeasureRegrMedianAE(MeasureRegr):
     """Median Absolute Error.
     
-    Robust to outliers compared to MAE.
+    Wraps sklearn's median_absolute_error. Median absolute difference; more
+    robust to outliers than MAE.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.regression import MeasureRegrMedianAE
+    >>> y_true = np.array([3, -0.5, 2, 7])
+    >>> y_pred = np.array([2.5,  0.0, 2, 8])
+    >>> MeasureRegrMedianAE().score(y_true, y_pred)
+    0.5
     """
     
     def __init__(self):
@@ -192,13 +288,30 @@ class MeasureRegrMedianAE(MeasureRegr):
 class MeasureRegrMSLE(MeasureRegr):
     """Mean Squared Logarithmic Error.
     
-    Useful when targets have exponential growth.
-    Note: requires non-negative values.
+    Useful when relative differences matter or targets grow exponentially.
+    Requires non-negative values (entries < 0 are ignored).
     
     Parameters
     ----------
     squared : bool, default=True
         If True, returns MSLE. If False, returns RMSLE.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.regression import MeasureRegrMSLE
+    >>> y_true = np.array([1., 10.])
+    >>> y_pred = np.array([2., 20.])
+    >>> round(MeasureRegrMSLE().score(y_true, y_pred), 3)
+    0.291
+
+    Notes
+    -----
+    Negative values are excluded from the calculation.
+
+    See Also
+    --------
+    MeasureRegrRMSLE : Root mean squared logarithmic error
     """
     
     def __init__(self, squared: bool = True):
@@ -235,7 +348,19 @@ class MeasureRegrMSLE(MeasureRegr):
 
 @register_measure
 class MeasureRegrRMSLE(MeasureRegrMSLE):
-    """Root Mean Squared Logarithmic Error."""
+    """Root Mean Squared Logarithmic Error.
+
+    Square root of MSLE; preserves interpretability in log scale.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.regression import MeasureRegrRMSLE
+    >>> y_true = np.array([1., 10.])
+    >>> y_pred = np.array([2., 20.])
+    >>> float(round(MeasureRegrRMSLE().score(y_true, y_pred), 2))
+    0.54
+    """
     
     def __init__(self):
         super().__init__(squared=False)

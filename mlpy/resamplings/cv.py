@@ -11,8 +11,9 @@ from ..tasks import Task
 class ResamplingCV(Resampling):
     """K-fold cross-validation.
     
-    Splits data into k folds, using each fold as test set once.
-    
+    Splits data into k folds, using each fold as test set once
+    while the remaining folds form the train set.
+
     Parameters
     ----------
     folds : int, default=10
@@ -21,6 +22,25 @@ class ResamplingCV(Resampling):
         Whether to stratify folds by target variable (classification only).
     seed : int, optional
         Random seed for reproducibility.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from mlpy.tasks import TaskClassif
+    >>> df = pd.DataFrame({'x': [1,2,3,4,5,6], 'y': [0,1,0,1,0,1]})
+    >>> task = TaskClassif(df, target='y')
+    >>> cv = ResamplingCV(folds=3, stratify=True, seed=1)
+    >>> cv.instantiate(task)
+    <ResamplingCV[instantiated]:cv>
+    >>> cv.iters
+    3
+    >>> sum(len(cv.test_set(i)) for i in range(cv.iters))
+    6
+    
+    Notes
+    -----
+    - ``stratify=True`` requires a single classification target.
+    - Train/test splits are fixed after ``instantiate(task)``.
     """
     
     def __init__(
@@ -117,6 +137,20 @@ class ResamplingLOO(Resampling):
     
     Special case of k-fold CV where k equals the number of samples.
     Each iteration uses a single sample as test set.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from mlpy.tasks import TaskClassif
+    >>> df = pd.DataFrame({'x': [1,2,3,4], 'y': [0,1,0,1]})
+    >>> task = TaskClassif(df, target='y')
+    >>> loo = ResamplingLOO()
+    >>> loo.instantiate(task)
+    <ResamplingLOO[instantiated]:loo>
+    >>> loo.iters
+    4
+    >>> len(loo.test_set(0))
+    1
     """
     
     def __init__(self):
@@ -165,6 +199,18 @@ class ResamplingRepeatedCV(Resampling):
         Whether to stratify folds by target variable.
     seed : int, optional
         Random seed for reproducibility.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from mlpy.tasks import TaskClassif
+    >>> df = pd.DataFrame({'x': [1,2,3,4,5,6], 'y': [0,1,0,1,0,1]})
+    >>> task = TaskClassif(df, target='y')
+    >>> rcv = ResamplingRepeatedCV(folds=2, repeats=2, seed=7)
+    >>> rcv.instantiate(task)
+    <ResamplingRepeatedCV[instantiated]:repeated_cv>
+    >>> rcv.iters
+    4
     """
     
     def __init__(

@@ -11,14 +11,32 @@ from ..predictions import PredictionClassif
 @register_measure
 class MeasureClassifAccuracy(MeasureClassif):
     """Classification accuracy measure.
-    
-    Calculates the proportion of correct predictions.
+
+    Wraps the standard accuracy metric with MLPY's unified interface.
+    Computes the fraction (or count) of correctly classified samples.
     
     Parameters
     ----------
     normalize : bool, default=True
         If True, return fraction of correctly classified samples.
         If False, return number of correctly classified samples.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.classification import MeasureClassifAccuracy
+    >>> y_true = np.array([0, 1, 1, 0])
+    >>> y_pred = np.array([0, 1, 0, 0])
+    >>> float(MeasureClassifAccuracy().score(y_true, y_pred))
+    0.75
+
+    Notes
+    -----
+    Requires response predictions (class labels).
+
+    See Also
+    --------
+    MeasureClassifCE : Classification error (1 - accuracy)
     """
     
     def __init__(self, normalize: bool = True):
@@ -49,8 +67,26 @@ class MeasureClassifAccuracy(MeasureClassif):
 @register_measure
 class MeasureClassifCE(MeasureClassif):
     """Classification error (complement of accuracy).
-    
-    Calculates the proportion of incorrect predictions.
+
+    Computes the fraction of incorrectly classified samples. Equal to
+    ``1 - accuracy`` when ``normalize=True`` in accuracy.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.classification import MeasureClassifCE
+    >>> y_true = np.array([0, 1, 1, 0])
+    >>> y_pred = np.array([0, 1, 0, 0])
+    >>> float(MeasureClassifCE().score(y_true, y_pred))
+    0.25
+
+    Notes
+    -----
+    Requires response predictions (class labels).
+
+    See Also
+    --------
+    MeasureClassifAccuracy : Accuracy measure
     """
     
     def __init__(self):
@@ -77,8 +113,30 @@ class MeasureClassifCE(MeasureClassif):
 @register_measure
 class MeasureClassifAUC(MeasureClassif):
     """Area Under the ROC Curve for binary classification.
-    
-    Only works for binary classification tasks.
+
+    Measures the ability of the model to rank positive instances higher
+    than negative ones, using probability predictions.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import pandas as pd
+    >>> from mlpy.measures.classification import MeasureClassifAUC
+    >>> from mlpy.predictions import PredictionClassif
+    >>> y_true = np.array([0, 0, 1, 1])
+    >>> prob = pd.DataFrame({0: [0.9, 0.35, 0.4, 0.1], 1: [0.1, 0.65, 0.6, 0.9]})
+    >>> pred = PredictionClassif(task=None, learner_id='demo', row_ids=[0,1,2,3], truth=y_true, prob=prob)
+    >>> MeasureClassifAUC().score(pred)
+    0.75
+
+    Notes
+    -----
+    - Requires probability predictions.
+    - Only applicable to binary classification.
+
+    See Also
+    --------
+    MeasureClassifLogLoss : Probabilistic calibration loss
     """
     
     def __init__(self):
@@ -127,14 +185,35 @@ class MeasureClassifAUC(MeasureClassif):
 @register_measure  
 class MeasureClassifLogLoss(MeasureClassif):
     """Logarithmic loss (cross-entropy loss).
-    
-    Measures the performance of a classification model where the prediction
-    is a probability value between 0 and 1.
+
+    Penalizes confident and wrong probability predictions more strongly.
+    Lower is better; perfect predictions yield a score near 0.
     
     Parameters
     ----------
     eps : float, default=1e-15
         Small value to clip probabilities away from 0 and 1.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import pandas as pd
+    >>> from mlpy.measures.classification import MeasureClassifLogLoss
+    >>> from mlpy.predictions import PredictionClassif
+    >>> y_true = np.array([0, 0, 1, 1])
+    >>> prob = pd.DataFrame({0: [0.9, 0.8, 0.2, 0.1], 1: [0.1, 0.2, 0.8, 0.9]})
+    >>> pred = PredictionClassif(task=None, learner_id='demo', row_ids=[0,1,2,3], truth=y_true, prob=prob)
+    >>> score = MeasureClassifLogLoss().score(pred)
+    >>> float(round(score, 3))
+    0.164
+
+    Notes
+    -----
+    Requires probability predictions.
+
+    See Also
+    --------
+    MeasureClassifAUC : Ranking-based probability metric
     """
     
     def __init__(self, eps: float = 1e-15):
@@ -190,6 +269,10 @@ class MeasureClassifLogLoss(MeasureClassif):
 class MeasureClassifF1(MeasureClassif):
     """F1 score (harmonic mean of precision and recall).
     
+    Wraps sklearn's ``f1_score`` with MLPY's unified interface. Balances
+    precision and recall into a single number; useful when both false
+    positives and false negatives matter, especially on imbalanced data.
+    
     Parameters
     ----------
     average : str, default='binary'
@@ -200,6 +283,25 @@ class MeasureClassifF1(MeasureClassif):
         - 'weighted': Calculate for each class and weight by support
     pos_label : str or int, optional
         The positive class for binary classification.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.classification import MeasureClassifF1
+    >>> y_true = np.array([0, 1, 1, 0])
+    >>> y_pred = np.array([0, 1, 0, 0])
+    >>> round(MeasureClassifF1().score(y_true, y_pred), 3)
+    0.667
+
+    Notes
+    -----
+    Defaults to 'binary' average; for multiclass, this measure auto-switches
+    to 'weighted' if average='binary' and more than two classes are detected.
+
+    See Also
+    --------
+    MeasureClassifPrecision : Positive predictive value
+    MeasureClassifRecall : Sensitivity (true positive rate)
     """
     
     def __init__(self, average: str = 'binary', pos_label=None):
@@ -251,12 +353,35 @@ class MeasureClassifF1(MeasureClassif):
 class MeasureClassifPrecision(MeasureClassif):
     """Precision score (positive predictive value).
     
+    Wraps sklearn's ``precision_score`` with MLPY's unified interface.
+    Proportion of predicted positives that are correct; useful when the
+    cost of false positives is high.
+    
     Parameters
     ----------
     average : str, default='binary'
         Averaging method for multiclass.
     pos_label : str or int, optional
         The positive class for binary classification.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.classification import MeasureClassifPrecision
+    >>> y_true = np.array([0, 1, 1, 0])
+    >>> y_pred = np.array([0, 1, 0, 0])
+    >>> MeasureClassifPrecision().score(y_true, y_pred)
+    1.0
+
+    Notes
+    -----
+    Defaults to 'binary' average; for multiclass, this measure auto-switches
+    to 'weighted' if average='binary' and more than two classes are detected.
+
+    See Also
+    --------
+    MeasureClassifRecall : Sensitivity (true positive rate)
+    MeasureClassifF1 : Harmonic mean of precision and recall
     """
     
     def __init__(self, average: str = 'binary', pos_label=None):
@@ -308,12 +433,35 @@ class MeasureClassifPrecision(MeasureClassif):
 class MeasureClassifRecall(MeasureClassif):
     """Recall score (sensitivity, true positive rate).
     
+    Wraps sklearn's ``recall_score`` with MLPY's unified interface.
+    Proportion of actual positives correctly identified; useful when the
+    cost of false negatives is high.
+    
     Parameters
     ----------
     average : str, default='binary'
         Averaging method for multiclass.
     pos_label : str or int, optional
         The positive class for binary classification.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mlpy.measures.classification import MeasureClassifRecall
+    >>> y_true = np.array([0, 1, 1, 0])
+    >>> y_pred = np.array([0, 1, 0, 0])
+    >>> MeasureClassifRecall().score(y_true, y_pred)
+    0.5
+
+    Notes
+    -----
+    Defaults to 'binary' average; for multiclass, this measure auto-switches
+    to 'weighted' if average='binary' and more than two classes are detected.
+
+    See Also
+    --------
+    MeasureClassifPrecision : Positive predictive value
+    MeasureClassifF1 : Harmonic mean of precision and recall
     """
     
     def __init__(self, average: str = 'binary', pos_label=None):

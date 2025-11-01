@@ -61,19 +61,22 @@ class SpatialKFold(SpatialResampling):
         
     Examples
     --------
-    >>> from mlpy.resamplings.spatial import SpatialKFold
+    >>> import pandas as pd
     >>> from mlpy.tasks.spatial import TaskClassifSpatial
-    >>> 
-    >>> # Create spatial task
-    >>> task = TaskClassifSpatial(data, target='class', coordinate_names=['x', 'y'])
-    >>> 
-    >>> # Create spatial k-fold
-    >>> cv = SpatialKFold(n_folds=5)
+    >>> from mlpy.resamplings.spatial import SpatialKFold
+    >>> df = pd.DataFrame({
+    ...     'x': [0, 1, 2, 3, 4, 5],
+    ...     'y': [0, 1, 2, 3, 4, 5],
+    ...     'y_cls': [0, 0, 1, 1, 0, 1]
+    ... })
+    >>> task = TaskClassifSpatial(df, target='y_cls', coordinate_names=['x', 'y'])
+    >>> cv = SpatialKFold(n_folds=3, random_state=0)
     >>> cv.instantiate(task)
-    >>> 
-    >>> # Get first fold
-    >>> train_idx = cv.train_set(0)
-    >>> test_idx = cv.test_set(0)
+    <SpatialKFold[instantiated]:spatial_kfold>
+    >>> cv.iters
+    3
+    >>> sum(len(cv.test_set(i)) for i in range(cv.iters)) == len(df)
+    True
     """
     
     def __init__(
@@ -245,16 +248,20 @@ class SpatialBlockCV(SpatialResampling):
         
     Examples
     --------
+    >>> import pandas as pd
+    >>> from mlpy.tasks.spatial import TaskClassifSpatial
     >>> from mlpy.resamplings.spatial import SpatialBlockCV
-    >>> 
-    >>> # Create spatial block CV with 3x3 grid
-    >>> cv = SpatialBlockCV(n_blocks=(3, 3))
+    >>> df = pd.DataFrame({
+    ...     'x': [0, 1, 2, 3],
+    ...     'y': [0, 1, 2, 3],
+    ...     'y_cls': [0, 1, 0, 1]
+    ... })
+    >>> task = TaskClassifSpatial(df, target='y_cls', coordinate_names=['x', 'y'])
+    >>> cv = SpatialBlockCV(n_blocks=(2, 2))
     >>> cv.instantiate(task)
-    >>> 
-    >>> # Iterate through folds
-    >>> for i in range(cv.iters):
-    ...     train = cv.train_set(i)
-    ...     test = cv.test_set(i)
+    <SpatialBlockCV[instantiated]:spatial_block>
+    >>> cv.iters
+    4
     """
     
     def __init__(
@@ -448,11 +455,20 @@ class SpatialBufferCV(SpatialResampling):
         
     Examples
     --------
+    >>> import pandas as pd
+    >>> from mlpy.tasks.spatial import TaskClassifSpatial
     >>> from mlpy.resamplings.spatial import SpatialBufferCV
-    >>> 
-    >>> # Create buffer CV with 100m buffer
-    >>> cv = SpatialBufferCV(buffer_distance=100, test_size=0.2, n_folds=5)
+    >>> df = pd.DataFrame({
+    ...     'x': [0, 1, 2, 3, 4],
+    ...     'y': [0, 0, 0, 0, 0],
+    ...     'y_cls': [0, 1, 0, 1, 0]
+    ... })
+    >>> task = TaskClassifSpatial(df, target='y_cls', coordinate_names=['x', 'y'])
+    >>> cv = SpatialBufferCV(buffer_distance=0.5, test_size=2, n_folds=2, random_state=0)
     >>> cv.instantiate(task)
+    <SpatialBufferCV[instantiated]:spatial_buffer>
+    >>> all(len(cv.test_set(i)) == 2 for i in range(cv.iters))
+    True
     """
     
     def __init__(

@@ -32,7 +32,13 @@ try:
         LearnerLinearRegression,
         LearnerRidge,
         LearnerLasso,
-        auto_sklearn
+        auto_sklearn,
+        LearnerGradientBoostingClassifier,
+        LearnerGradientBoostingRegressor,
+        LearnerAdaBoostClassifier,
+        LearnerAdaBoostRegressor,
+        LearnerExtraTreesClassifier,
+        LearnerExtraTreesRegressor
     )
     from mlpy.learners.sklearn.base import LearnerClassifSKLearn, LearnerRegrSKLearn
     _HAS_MLPY_SKLEARN = True
@@ -260,6 +266,50 @@ class TestClassificationWrappers:
         assert pred.prob is not None
         assert hasattr(learner.estimator, 'estimators_')
 
+    def test_gradient_boosting(self, sample_task_classif):
+        """Test GradientBoosting wrapper"""
+        learner = LearnerGradientBoostingClassifier(
+            n_estimators=20,
+            learning_rate=0.1,
+            random_state=42
+        )
+
+        assert learner.id == "gradient_boosting"
+        learner.train(sample_task_classif)
+        pred = learner.predict(sample_task_classif)
+
+        assert isinstance(pred, PredictionClassif)
+        assert hasattr(learner.estimator, "estimators_")
+
+    def test_ada_boost(self, sample_task_classif):
+        """Test AdaBoost wrapper"""
+        learner = LearnerAdaBoostClassifier(
+            n_estimators=15,
+            learning_rate=0.2,
+            random_state=42
+        )
+
+        assert learner.id == "adaboost"
+        learner.train(sample_task_classif)
+        pred = learner.predict(sample_task_classif)
+
+        assert isinstance(pred, PredictionClassif)
+        assert hasattr(learner.estimator, "estimators_")
+
+    def test_extra_trees(self, sample_task_classif):
+        """Test ExtraTrees wrapper"""
+        learner = LearnerExtraTreesClassifier(
+            n_estimators=12,
+            max_depth=4,
+            random_state=42
+        )
+
+        assert learner.id == "extra_trees"
+        learner.train(sample_task_classif)
+        pred = learner.predict(sample_task_classif)
+
+        assert isinstance(pred, PredictionClassif)
+        assert hasattr(learner.estimator, "estimators_")
 
 @pytest.mark.skipif(not _HAS_MLPY_SKLEARN, reason="MLPY sklearn wrappers not available")
 @pytest.mark.skipif(not _HAS_SKLEARN, reason="scikit-learn not installed")
@@ -300,6 +350,50 @@ class TestRegressionWrappers:
         # Check that Lasso performs feature selection (some coefs should be 0)
         assert np.any(np.abs(learner.estimator.coef_) < 1e-10)
 
+    def test_gradient_boosting_regression(self, sample_task_regr):
+        """Test GradientBoostingRegression wrapper"""
+        learner = LearnerGradientBoostingRegressor(
+            n_estimators=20,
+            learning_rate=0.1,
+            random_state=42
+        )
+
+        assert learner.id == "gradient_boosting_regr"
+        learner.train(sample_task_regr)
+        pred = learner.predict(sample_task_regr)
+
+        assert isinstance(pred, PredictionRegr)
+        assert hasattr(learner.estimator, "estimators_")
+
+    def test_ada_boost_regression(self, sample_task_regr):
+        """Test AdaBoostRegression wrapper"""
+        learner = LearnerAdaBoostRegressor(
+            n_estimators=15,
+            learning_rate=0.2,
+            random_state=42
+        )
+
+        assert learner.id == "adaboost_regr"
+        learner.train(sample_task_regr)
+        pred = learner.predict(sample_task_regr)
+
+        assert isinstance(pred, PredictionRegr)
+        assert hasattr(learner.estimator, "estimators_")
+
+    def test_extra_trees_regression(self, sample_task_regr):
+        """Test ExtraTreesRegression wrapper"""
+        learner = LearnerExtraTreesRegressor(
+            n_estimators=12,
+            max_depth=4,
+            random_state=42
+        )
+
+        assert learner.id == "extra_trees_regr"
+        learner.train(sample_task_regr)
+        pred = learner.predict(sample_task_regr)
+
+        assert isinstance(pred, PredictionRegr)
+        assert hasattr(learner.estimator, "estimators_")
 
 @pytest.mark.skipif(not _HAS_MLPY_SKLEARN, reason="MLPY sklearn wrappers not available")
 class TestAutoWrap:
