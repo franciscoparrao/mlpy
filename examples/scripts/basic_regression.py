@@ -18,8 +18,10 @@ from mlpy.learners.sklearn import LearnerLinearRegression
 from mlpy.measures import MeasureRegrRMSE
 
 def main():
-    # Load dataset
+    print("Loading dataset...")
     data = sklearn.datasets.load_diabetes()
+
+    # Build DataFrame with features and target
     df = pd.DataFrame(data.data, columns=data.feature_names)
     df["target"] = pd.Series(data.target)
 

@@ -16,15 +16,21 @@ from mlpy.resamplings import ResamplingCV
 
 
 def main():
+    # Load dataset
     iris = datasets.load_iris()
+
+    # Build DataFrame with features and target
     df = pd.DataFrame(iris.data, columns=iris.feature_names)
     df["target"] = iris.target
 
+    # Create task
     task = TaskClassif(data=df, target="target", id="iris_cv")
 
+    # Initialize learner
     learner = LearnerRandomForestClassifier(n_estimators=100, random_state=42)
 
     print("Running 5-fold cross-validation...")
+    # Perform cross-validation
     result = resample(
         task=task,
         learner=learner,

@@ -14,19 +14,24 @@ from mlpy.learners.sklearn import (
     LearnerRandomForestClassifier,
     LearnerLogisticRegression,
     LearnerSVM,
-    LearnerAdaBoost  # using LearnerAdaBoost as available alias
+    LearnerAdaBoost
 )
 from mlpy.measures import MeasureClassifAccuracy, MeasureClassifF1
 from mlpy.resamplings import ResamplingCV
 
 
 def main():
+    print("Loading Iris dataset...")
     iris = datasets.load_iris()
+
+    # Build DataFrame with features and target
     df = pd.DataFrame(iris.data, columns=iris.feature_names)
     df["target"] = iris.target
 
+    # Create task
     task = TaskClassif(data=df, target="target", id="iris_bench")
 
+    # Define learners to benchmark
     learners = [
         LearnerRandomForestClassifier(random_state=42),
         LearnerLogisticRegression(random_state=42),

@@ -14,7 +14,7 @@ import pandas as pd
 from sklearn import datasets
 
 from mlpy.tasks import TaskClassif
-from mlpy.learners.sklearn import LearnerRandomForestClassifier
+from mlpy.learners.sklearn import LearnerDecisionTreeClassifier
 from mlpy.measures import MeasureClassifAccuracy
 
 
@@ -30,7 +30,7 @@ def main():
     task = TaskClassif(data=df, target="target", id="iris_basic")
 
     # Train learner
-    learner = LearnerRandomForestClassifier(n_estimators=100, random_state=42)
+    learner = LearnerDecisionTreeClassifier(random_state=42)
     learner.train(task)
 
     # Predict on whole dataset
