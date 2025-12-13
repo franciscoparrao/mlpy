@@ -1,0 +1,11 @@
+Highlights
+
+• First Python framework providing native spatial cross-validation for geoscience applications
+
+• Standard CV underestimates error by 5--31% across environmental and mineral exploration domains
+
+• Validated across two case studies with different spatial autocorrelation strengths (I = 0.336--0.545)
+
+• Comparison with Kriging demonstrates complementary strengths of ML and geostatistical approaches
+
+• Provides practical guidelines: use spatial CV when Moran's I > 0.3

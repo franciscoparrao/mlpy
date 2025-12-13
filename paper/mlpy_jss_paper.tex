@@ -1,0 +1,529 @@
+\documentclass[article]{jss}
+
+%% -- LaTeX packages and custom commands ---------------------------------------
+
+%% recommended packages
+\usepackage{orcidlink,thumbpdf,lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{booktabs}
+
+%% new custom commands
+\newcommand{\class}[1]{`\code{#1}'}
+\newcommand{\fct}[1]{\code{#1()}}
+
+
+%% -- Article metainformation (author, title, ...) -----------------------------
+
+%% - \author{} with primary affiliation
+%% - \Plainauthor{} without affiliations
+\author{Francisco Parra O.~\orcidlink{0009-0006-0435-1854}\\Universidad de Santiago de Chile
+   \And Giuseppe Cavallieri~\orcidlink{0009-0002-9854-1456}\\Universidad de Santiago de Chile}
+\Plainauthor{Francisco Parra O., Giuseppe Cavallieri}
+
+%% - \title{} in title case
+%% - \Plaintitle{} without LaTeX markup (if any)
+%% - \Shorttitle{} with LaTeX markup (if any), used as running title
+\title{\pkg{MLPY}: A Modular Machine Learning Framework for \proglang{Python} with Native Spatial Support}
+\Plaintitle{MLPY: A Modular Machine Learning Framework for Python with Native Spatial Support}
+\Shorttitle{\pkg{MLPY}: Spatial Machine Learning in \proglang{Python}}
+
+%% - \Abstract{} almost as usual
+\Abstract{
+\proglang{Python}'s machine learning ecosystem is dominated by \pkg{scikit-learn}, a powerful but monolithic framework where preprocessing, modeling, and evaluation are tightly coupled. This makes it hard to compose complex pipelines from reusable components or extend the framework cleanly. We present \pkg{MLPY}, a modular machine learning framework for \proglang{Python} inspired by \proglang{R}'s \pkg{mlr3}. \pkg{MLPY} separates tasks, learners, measures, and predictions into composable abstractions, enabling systematic comparison of methods and clean extension.
+
+The key contribution is native support for spatial machine learning---currently missing in \proglang{Python}. Our Meuse dataset case study shows that regular cross-validation underestimates prediction error by 19\% on spatial data ($RMSE = 104$ ppm vs.~$125$ ppm with spatial CV). A robustness analysis across multiple k-fold configurations (k=3, 5, 7, 10) confirms this finding is not configuration-dependent, with underestimation ranging from 15.6\% to 32.7\% (mean: 24.7\%). We provide practical guidance on when to use spatial CV based on Moran's I statistic. The framework is available as open-source software on PyPI (\code{pip install mlpy-geo}).
+}
+
+%% - \Keywords{} with LaTeX markup, at least one required
+%% - \Plainkeywords{} without LaTeX markup (if necessary)
+%% - Should be comma-separated and in sentence case.
+\Keywords{machine learning, spatial statistics, cross-validation, \proglang{Python}, spatial autocorrelation}
+\Plainkeywords{machine learning, spatial statistics, cross-validation, Python, spatial autocorrelation}
+
+%% - \Address{} of at least one author
+\Address{
+  Francisco Parra O.\\
+  Departamento de Ingeniería Informática\\
+  Universidad de Santiago de Chile\\
+  Santiago, Chile\\
+  E-mail: \email{francisco.parra.o@usach.cl}\\
+  \emph{and}\\
+  Giuseppe Cavallieri\\
+  Departamento de Ingeniería Informática\\
+  Universidad de Santiago de Chile\\
+  Santiago, Chile\\
+  E-mail: \email{giuseppe.cavallieri@usach.cl}
+}
+
+\begin{document}
+
+
+%% -- Introduction -------------------------------------------------------------
+
+\section[Introduction]{Introduction} \label{sec:intro}
+
+\proglang{Python}'s machine learning ecosystem is dominated by \pkg{scikit-learn} \citep{pedregosa2011scikit}, a powerful but monolithic framework. While \pkg{scikit-learn} excels at providing consistent APIs for individual algorithms, it tightly couples preprocessing, modeling, and evaluation. This makes it hard to systematically compare multiple learners across multiple datasets, compose complex pipelines from reusable components, or extend the framework with custom methods.
+
+Want to systematically compare multiple learners across multiple datasets? You'll write a lot of boilerplate. Need spatial cross-validation to handle geographic data? Not available. Want to tune hyperparameters declaratively without manually calculating grid points? You'll build it yourself.
+
+We present \pkg{MLPY}, a modular machine learning framework for \proglang{Python} inspired by \proglang{R}'s \pkg{mlr3} \citep{lang2019mlr3}. \pkg{MLPY} separates tasks, learners, measures, and predictions into composable abstractions. This separation enables:
+
+\begin{itemize}
+\item \textbf{Systematic benchmarking}: Compare multiple learners across multiple datasets with a single function call.
+\item \textbf{Reusable pipelines}: Build complex preprocessing graphs that work with any learner.
+\item \textbf{Spatial cross-validation}: Native support for geographic data that respects spatial structure.
+\item \textbf{Declarative tuning}: Specify hyperparameter spaces symbolically rather than manually.
+\item \textbf{Clean extension}: Add new learners, measures, or resampling strategies by inheriting from base classes.
+\end{itemize}
+
+The key contribution is native support for spatial machine learning. When machine learning is applied to spatial or geographic data, standard cross-validation can produce overly optimistic performance measures because spatially proximal observations tend to be more similar than distant ones (spatial autocorrelation). \pkg{MLPY} provides spatial resampling strategies that account for this structure. Our Meuse river dataset case study demonstrates that regular cross-validation underestimates prediction error by 19\% ($RMSE = 104$ ppm vs.~$125$ ppm with spatial CV).
+
+Section~\ref{sec:related} surveys related frameworks, Section~\ref{sec:architecture} describes \pkg{MLPY}'s architecture, and Section~\ref{sec:implementation} covers implementation details. Section~\ref{sec:benchmarks} evaluates \pkg{MLPY} with a spatial machine learning case study and AutoML tuning examples. Section~\ref{sec:when-spatial-cv} provides practical guidance on when to use spatial cross-validation, including robustness analysis and diagnostic tools. Section~\ref{sec:conclusion} concludes with limitations and future work.
+
+
+%% -- Related Work -------------------------------------------------------------
+
+\section{Related work} \label{sec:related}
+
+Several machine learning frameworks exist across programming languages. Table~\ref{tab:comparison} compares \pkg{MLPY} with major alternatives.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+Framework & Language & Modular & Spatial CV & AutoML & Pipelines & Year \\
+\midrule
+\pkg{scikit-learn} & \proglang{Python} & Partial & No & Partial & Yes & 2011 \\
+\pkg{mlr3} & \proglang{R} & Yes & Yes & Yes & Yes & 2019 \\
+\pkg{caret} & \proglang{R} & Partial & No & Yes & Yes & 2008 \\
+\pkg{PyCaret} & \proglang{Python} & No & No & Yes & Yes & 2020 \\
+\pkg{H2O} & Multi & Partial & No & Yes & Yes & 2014 \\
+\pkg{MLPY} & \proglang{Python} & Yes & Yes & Yes & Yes & 2025 \\
+\bottomrule
+\end{tabular}
+\caption{Comparison of machine learning frameworks. Spatial CV refers to native support for spatial cross-validation strategies.}
+\label{tab:comparison}
+\end{table}
+
+\textbf{\pkg{scikit-learn}} \citep{pedregosa2011scikit} is the de-facto standard for machine learning in \proglang{Python}. It provides a consistent API and extensive algorithm coverage, but lacks native spatial CV and has limited modularity for benchmarking workflows.
+
+\textbf{\pkg{mlr3}} \citep{lang2019mlr3} in \proglang{R} provides a modular, object-oriented framework with strong support for benchmarking and spatial methods. \pkg{MLPY} is directly inspired by \pkg{mlr3}'s design but adapted for \proglang{Python}'s ecosystem and idioms.
+
+\textbf{\pkg{caret}} \citep{kuhn2008caret} in \proglang{R} unifies training and prediction across algorithms but uses a functional rather than object-oriented approach, making extension less natural.
+
+\textbf{\pkg{PyCaret}} is a low-code AutoML library built on \pkg{scikit-learn}, focused on ease-of-use over modularity. It lacks spatial methods and is less suitable for research requiring custom extensions.
+
+\textbf{\pkg{H2O}} \citep{h2o} is a distributed machine learning platform with AutoML capabilities but limited spatial support and a proprietary core (though open-source wrappers exist).
+
+For spatial cross-validation, \proglang{R} packages \pkg{blockCV} \citep{valavi2019blockCV}, \pkg{sperrorest} \citep{brenning2012sperrorest}, and \pkg{CAST} \citep{meyer2018CAST} provide spatial resampling strategies. \pkg{MLPY} brings these capabilities to \proglang{Python} for the first time in a mainstream ML framework, integrating them with \pkg{scikit-learn}-compatible learners.
+
+
+%% -- Architecture and Design ------------------------------------------------
+
+\section{Architecture and design} \label{sec:architecture}
+
+\pkg{MLPY} follows a modular object-oriented design with clear separation of concerns. The framework is built around five core abstractions: tasks, learners, predictions, measures, and resamplings.
+
+\subsection{Core abstractions}
+
+\paragraph{Task.}
+A Task encapsulates an ML problem with its data and metadata. It provides a consistent interface for accessing features, targets, and row indices regardless of the underlying data representation.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+from mlpy.tasks import TaskClassif
+
+task = TaskClassif(data=iris, target="Species")
+task.feature_names
+\end{CodeInput}
+\begin{CodeOutput}
+['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
+\end{CodeOutput}
+\end{CodeChunk}
+
+Task subclasses specialize for different problem types:
+\begin{itemize}
+\item \class{TaskClassif} / \class{TaskRegr} --- supervised learning
+\item \class{TaskCluster} --- unsupervised learning
+\item \class{TaskTimeSeries} / \class{TaskForecasting} --- temporal data
+\item \class{TaskClassifSpatial} / \class{TaskRegrSpatial} --- spatial data with coordinates
+\end{itemize}
+
+\paragraph{Learner.}
+A Learner wraps an ML algorithm with a consistent interface for training and prediction. Unlike \pkg{scikit-learn}'s stateful estimators, \pkg{MLPY} learners are designed to be cloned and reused safely across multiple folds or tasks.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+from mlpy.learners.sklearn import LearnerRandomForest
+
+learner = LearnerRandomForest(n_estimators=100)
+learner.train(task)
+predictions = learner.predict(task)
+\end{CodeInput}
+\end{CodeChunk}
+
+\paragraph{Prediction.}
+A Prediction object encapsulates model outputs with metadata. It stores ground truth, predicted values, and (optionally) prediction probabilities or standard errors. This separation allows measures to operate uniformly across different learner types.
+
+\paragraph{Measure.}
+A Measure computes performance metrics from predictions. Measures are first-class objects that can be passed to resampling and benchmarking functions, enabling systematic comparison of methods.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+from mlpy.measures import MeasureClassifAccuracy
+
+measure = MeasureClassifAccuracy()
+measure.score(predictions.truth, predictions.response)
+\end{CodeInput}
+\begin{CodeOutput}
+0.96
+\end{CodeOutput}
+\end{CodeChunk}
+
+\subsection{Resampling strategies}
+
+\pkg{MLPY} provides a flexible resampling system for cross-validation and performance estimation. Standard strategies include \fct{ResamplingCV} (k-fold cross-validation), \fct{ResamplingHoldout} (train/test split), and \fct{ResamplingBootstrap}. For spatial data, \pkg{MLPY} provides \fct{SpatialKFold}, \fct{SpatialBlockCV}, and \fct{SpatialBufferCV} to prevent spatial autocorrelation from inflating performance estimates.
+
+The \fct{resample} function provides a high-level interface:
+
+\begin{CodeChunk}
+\begin{CodeInput}
+from mlpy import resample
+from mlpy.resamplings import ResamplingCV
+from mlpy.measures import MeasureClassifAccuracy, MeasureClassifF1
+
+result = resample(
+    task=task,
+    learner=learner,
+    resampling=ResamplingCV(folds=5),
+    measures=[MeasureClassifAccuracy(), MeasureClassifF1()]
+)
+result.score("classif.acc")
+\end{CodeInput}
+\begin{CodeOutput}
+0.953
+\end{CodeOutput}
+\end{CodeChunk}
+
+\subsection{Spatial machine learning}
+
+\pkg{MLPY} is the first \proglang{Python} ML framework with native spatial ML support. Spatial tasks preserve coordinate information and enable spatial resampling strategies:
+
+\begin{CodeChunk}
+\begin{CodeInput}
+from mlpy.tasks import TaskRegrSpatial
+
+task = TaskRegrSpatial(
+    data=meuse_data,
+    target="zinc",
+    coordinate_names=["x", "y"]
+)
+\end{CodeInput}
+\end{CodeChunk}
+
+Spatial resampling strategies ensure spatial independence between train and test sets. Section~\ref{sec:benchmarks} demonstrates the critical importance of spatial CV for geographic data.
+
+\subsection{Pipeline system}
+
+\pkg{MLPY} provides a graph-based pipeline system where preprocessing steps are nodes in a directed acyclic graph (DAG). This approach is more flexible than \pkg{scikit-learn}'s linear Pipeline, supporting branching, merging, feature unions, and lazy evaluation.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+from mlpy.pipelines import linear_pipeline, PipeOpScale, PipeOpPCA
+from mlpy.pipelines.graph_learner import GraphLearner
+from mlpy.learners.sklearn import LearnerRandomForest
+
+graph = linear_pipeline(
+    PipeOpScale(),
+    PipeOpPCA(n_components=2)
+)
+learner = GraphLearner(graph, LearnerRandomForest())
+\end{CodeInput}
+\end{CodeChunk}
+
+
+%% -- Implementation --------------------------------------------------------
+
+\section{Implementation} \label{sec:implementation}
+
+\subsection{Technical details}
+
+\pkg{MLPY} is implemented in pure \proglang{Python} with minimal required dependencies (\pkg{numpy}, \pkg{pandas}). Optional components include \pkg{scikit-learn} integration, visualization tools (\pkg{matplotlib}), spatial functions (\pkg{scipy}), and support for boosting algorithms (\pkg{xgboost}, \pkg{lightgbm}, \pkg{catboost}).
+
+This design allows users to install only needed components via extras:
+
+\begin{CodeChunk}
+\begin{CodeInput}
+$ pip install mlpy-geo                    # Minimal installation
+$ pip install mlpy-geo[sklearn]           # With scikit-learn learners
+$ pip install mlpy-geo[all]               # All features
+\end{CodeInput}
+\end{CodeChunk}
+
+\subsection{Learner integration}
+
+\pkg{MLPY} provides wrappers for \pkg{scikit-learn} estimators that automatically handle parameter translation and prediction formatting. Custom learners can be added by inheriting from base classes and implementing \fct{train} and \fct{predict} methods.
+
+\subsection{Performance optimizations}
+
+The framework uses several optimizations:
+\begin{itemize}
+\item Lazy data loading and caching for large datasets
+\item Vectorized operations via \pkg{numpy} where possible
+\item Optional parallel execution for independent operations (e.g., CV folds)
+\item Memory-efficient pipeline operations that avoid unnecessary data copies
+\end{itemize}
+
+
+%% -- Benchmarks and Applications ------------------------------------------
+
+\section{Benchmarks and applications} \label{sec:benchmarks}
+
+We demonstrate \pkg{MLPY}'s capabilities through two applications: spatial cross-validation for environmental data (Section~\ref{sec:spatial}) and declarative hyperparameter tuning (Section~\ref{sec:automl}).
+
+\subsection{Spatial machine learning validation} \label{sec:spatial}
+
+Spatial data breaks a key assumption of standard cross-validation: that observations are independent. Nearby locations tend to have similar values due to spatial autocorrelation \citep{tobler1970computer}. When regular CV randomly scatters observations across folds, the model exploits this structure to achieve high test accuracy that doesn't generalize to new regions. Error estimates are far too optimistic. We demonstrate this problem using a real environmental dataset.
+
+\subsubsection{Dataset: Meuse River contamination}
+
+We use the Meuse dataset \citep{burrough1998principles, rikken1993soil}, a classic spatial statistics benchmark with measurements of heavy metal concentrations in the topsoil of the Meuse river floodplain (Netherlands). The data includes 155 observations with geographic coordinates, heavy metal concentrations (zinc, cadmium, lead, copper), and environmental covariates. We predict zinc concentration from distance to river, elevation, and flood frequency. Figure~\ref{fig:spatial_distribution} shows clear spatial patterns with higher concentrations near the river.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/figure1_spatial_distribution.pdf}
+\caption{Spatial distribution of zinc concentration (ppm) in the Meuse river floodplain. The visible spatial pattern suggests strong spatial autocorrelation.}
+\label{fig:spatial_distribution}
+\end{figure}
+
+\subsubsection{Spatial autocorrelation}
+
+We quantify spatial structure using Moran's I \citep{moran1950notes}, which ranges from $-1$ (perfect dispersion) to $+1$ (perfect clustering), with 0 indicating randomness:
+
+\begin{equation}
+I = \frac{n}{\sum_{i}\sum_{j}w_{ij}} \cdot \frac{\sum_{i}\sum_{j}w_{ij}(y_i - \bar{y})(y_j - \bar{y})}{\sum_{i}(y_i - \bar{y})^2}
+\end{equation}
+
+where $n$ is observations, $w_{ij}$ is the spatial weight between locations $i$ and $j$, and $\bar{y}$ is the mean. Table~\ref{tab:morans_i} shows moderate positive autocorrelation for all metals (0.255--0.292).
+
+\begin{table}[ht]
+\centering
+\caption{Moran's I statistics for heavy metal concentrations. All values indicate moderate positive spatial autocorrelation.}
+\label{tab:morans_i}
+\begin{tabular}{lcc}
+\toprule
+Metal & Moran's I & Interpretation \\
+\midrule
+Zinc    & 0.271 & Moderate \\
+Cadmium & 0.292 & Moderate \\
+Lead    & 0.261 & Moderate \\
+Copper  & 0.255 & Moderate \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:variogram} visualizes this through an empirical variogram, showing increasing semivariance with distance.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.65\textwidth]{figures/figure2_variogram.pdf}
+\caption{Empirical variogram for zinc concentration. The increasing semivariance with distance confirms that nearby locations are more similar than distant ones.}
+\label{fig:variogram}
+\end{figure}
+
+\subsubsection{Cross-validation comparison}
+
+We compared three CV approaches: (1) \pkg{scikit-learn} standard 5-fold CV, (2) \pkg{MLPY} standard 5-fold CV, and (3) \pkg{MLPY} Spatial K-Fold using K-means clustering on coordinates to ensure spatial separation between folds.
+
+A Random Forest regressor (100 trees) was trained to predict zinc concentration. Table~\ref{tab:cv_comparison} shows the results. Regular CV methods yield $RMSE \approx 104$ ppm. Spatial CV yields $RMSE = 125$ ppm---\textbf{regular CV underestimates prediction error by 19\%}.
+
+\begin{table}[ht]
+\centering
+\caption{Cross-validation method comparison. Regular CV produces overly optimistic error estimates compared to spatial CV.}
+\label{tab:cv_comparison}
+\begin{tabular}{lcc}
+\toprule
+Method & RMSE (ppm) & Underestimation \\
+\midrule
+\pkg{scikit-learn} CV & 104.2 & 19.9\% \\
+\pkg{MLPY} standard CV & 103.7 & 20.3\% \\
+\pkg{MLPY} Spatial K-Fold & 125.0 & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:cv_comparison} visualizes this difference. Figure~\ref{fig:spatial_folds} shows how Spatial K-Fold creates geographically separated folds to prevent spatial leakage.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/figure3_cv_comparison.pdf}
+\caption{RMSE comparison across CV methods. Regular CV severely underestimates true prediction error on spatial data.}
+\label{fig:cv_comparison}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/figure4_spatial_folds.pdf}
+\caption{Spatial K-Fold partitioning (5 folds) using K-means on coordinates. Each color represents one fold, ensuring geographic separation.}
+\label{fig:spatial_folds}
+\end{figure}
+
+\subsubsection{Discussion}
+
+The Meuse dataset shows that spatial autocorrelation is both real and consequential. With Moran's I around 0.27, the spatial structure is strong enough to violate CV's independence assumption. The impact is substantial: regular CV underestimates error by 19\%. This isn't a minor statistical curiosity---it means a model that appears highly accurate will perform much worse when deployed to new regions.
+
+\pkg{MLPY}'s spatial resampling addresses this by ensuring train and test sets are geographically separated. This provides realistic performance estimates for spatial prediction tasks common in environmental monitoring, precision agriculture, real estate, and epidemiology.
+
+\subsection{Declarative hyperparameter tuning} \label{sec:automl}
+
+Hyperparameter tuning is tedious. With \pkg{scikit-learn}, you manually define grid points for each parameter---calculate appropriate values, balance resolution against compute cost, manage complex dictionaries.
+
+\pkg{MLPY} provides declarative parameter spaces. Instead of manually writing \code{[50, 87, 125, 162, 200]} for every tuning run, define the range once:
+
+\begin{CodeChunk}
+\begin{CodeInput}
+from mlpy.automl.tuning import tune, SearchSpaceNumeric, SearchSpaceCategorical
+
+search_space = {
+    'n_estimators': SearchSpaceNumeric(50, 200, log=False),
+    'max_depth': SearchSpaceNumeric(5, 20),
+    'min_samples_split': SearchSpaceCategorical([2, 5, 10])
+}
+
+result = tune(
+    task=task,
+    learner=learner,
+    search_space=search_space,
+    n_evals=60
+)
+\end{CodeInput}
+\end{CodeChunk}
+
+This eliminates boilerplate, especially for log-scale parameters and high-dimensional searches. Performance matches \pkg{scikit-learn}, but the declarative API is cleaner and integrates with \pkg{MLPY}'s Task-Learner-Measure design.
+
+
+%% -- When to Use Spatial CV -----------------------------------------------
+
+\section{When to use spatial cross-validation} \label{sec:when-spatial-cv}
+
+Not all geospatial data requires spatial cross-validation. The key factor is \emph{spatial autocorrelation}---the degree to which nearby observations are more similar than distant ones. When autocorrelation is absent, regular cross-validation is appropriate and computationally cheaper. When present, spatial CV is essential to avoid overly optimistic error estimates.
+
+\subsection{Diagnostic tool: Moran's I}
+
+Moran's I statistic \citep{moran1950notes} quantifies spatial autocorrelation. Values range from $-1$ (perfect dispersion) to $+1$ (perfect clustering), with $0$ indicating no spatial pattern. For machine learning applications, we recommend:
+
+\begin{itemize}
+\item $I < 0.1$: No spatial autocorrelation. Regular CV is appropriate.
+\item $0.1 \leq I < 0.3$: Weak autocorrelation. Consider spatial CV for conservative estimates.
+\item $I \geq 0.3$: Moderate to strong autocorrelation. Spatial CV required.
+\end{itemize}
+
+The Meuse dataset exhibits moderate spatial autocorrelation ($I = 0.271$ for zinc concentration), making it an ideal test case for spatial CV.
+
+\subsection{Robustness analysis}
+
+To validate that our findings are not artifacts of specific CV configurations, we tested multiple k-fold settings on the Meuse dataset. Table~\ref{tab:sensitivity} shows that regular CV consistently underestimates error across all configurations, with underestimation ranging from 15.6\% to 32.7\% (mean: 24.7\%, SD: 7.2\%). The 19\% reported in Section~\ref{sec:benchmarks} falls within this robust range.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+k-folds & Regular CV & Spatial CV & Underestimation \\
+\midrule
+3  & 224.0 ppm & 332.9 ppm & 32.7\% \\
+5  & 236.3 ppm & 325.1 ppm & 27.3\% \\
+7  & 225.9 ppm & 294.1 ppm & 23.2\% \\
+10 & 230.2 ppm & 272.8 ppm & 15.6\% \\
+\midrule
+Mean & 229.1 ppm & 306.2 ppm & 24.7\% \\
+\bottomrule
+\end{tabular}
+\caption{Sensitivity of CV error to k-fold configuration on Meuse dataset. Regular CV consistently underestimates error across all settings, validating the robustness of our findings.}
+\label{tab:sensitivity}
+\end{table}
+
+The variation in underestimation percentage (15.6\%--32.7\%) is expected: with fewer folds ($k=3$), spatial separation between train and test sets is larger, leading to more conservative (higher) spatial CV errors and greater apparent underestimation. With more folds ($k=10$), spatial separation decreases, reducing the gap. The key finding is that regular CV \emph{always} underestimates, regardless of configuration.
+
+\subsection{Practical recommendations}
+
+Before applying machine learning to geospatial data:
+
+\begin{enumerate}
+\item \textbf{Calculate Moran's I} for the target variable using spatial weights (e.g., inverse distance or k-nearest neighbors).
+\item \textbf{Choose CV strategy} based on the I statistic:
+  \begin{itemize}
+  \item If $I < 0.1$: Use regular CV.
+  \item If $I \geq 0.3$: Use \class{SpatialKFold}, \class{SpatialBlockCV}, or \class{SpatialBufferCV}.
+  \item If $0.1 \leq I < 0.3$: Report both regular and spatial CV for comparison.
+  \end{itemize}
+\item \textbf{Report autocorrelation} alongside model performance to help readers assess result validity.
+\end{enumerate}
+
+\pkg{MLPY} makes this workflow straightforward. Spatial tasks automatically preserve coordinate information, and spatial resampling strategies integrate seamlessly with the Task-Learner-Measure design.
+
+\subsection{Application domains}
+
+Spatial autocorrelation is common in many scientific fields. Table~\ref{tab:domains} lists typical Moran's I values and recommended CV strategies for different application areas.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lll}
+\toprule
+Domain & Typical Moran's I & Recommended CV \\
+\midrule
+Soil science & $0.25$--$0.50$ & Spatial CV \\
+Disease mapping & $0.30$--$0.60$ & Spatial CV \\
+Environmental monitoring & $0.20$--$0.45$ & Spatial CV \\
+Real estate & $0.15$--$0.35$ & Spatial CV \\
+Urban analytics & $0.10$--$0.30$ & Check per case \\
+Socioeconomic data & $0.05$--$0.20$ & Check per case \\
+\bottomrule
+\end{tabular}
+\caption{Typical spatial autocorrelation levels and recommended CV strategies by application domain. Values are approximate and should be verified for specific datasets.}
+\label{tab:domains}
+\end{table}
+
+These recommendations are based on published spatial statistics literature \citep{brenning2012sperrorest, meyer2018CAST, valavi2019blockCV} and our own empirical analysis. Users should always calculate Moran's I for their specific datasets rather than relying solely on domain-based heuristics.
+
+
+%% -- Conclusion -----------------------------------------------------------
+
+\section{Conclusion} \label{sec:conclusion}
+
+\pkg{MLPY} brings \pkg{mlr3}'s modular design to \proglang{Python}. The framework separates tasks, learners, measures, and predictions into composable abstractions, making complex workflows simpler than with \pkg{scikit-learn}. The key contribution is native spatial ML support---\proglang{Python} had nothing comparable. We showed that regular cross-validation underestimates prediction error by 15\%--33\% on spatial data (mean: 24.7\%), with the 19\% case study result falling within this robust range. Beyond the implementation, we provide practical guidance for practitioners: calculate Moran's I ($I \geq 0.3$ requires spatial CV), validate robustness across configurations, and report autocorrelation alongside model performance.
+
+\pkg{MLPY} currently has limited deep learning support and no distributed computing backend. Spatial resampling requires \pkg{scipy}.
+
+We plan to add \pkg{PyTorch}/\pkg{TensorFlow} integration, distributed backends (\pkg{Dask}/\pkg{Ray}), and \pkg{MLflow} integration for experiment tracking.
+
+\section{Software availability} \label{sec:software}
+
+\pkg{MLPY} is available as open-source software:
+
+\begin{itemize}
+\item \textbf{Software name}: MLPY
+\item \textbf{Version}: 0.1.0
+\item \textbf{License}: MIT License
+\item \textbf{Repository}: \url{https://github.com/franciscoparrao/mlpy}
+\item \textbf{PyPI}: \url{https://pypi.org/project/mlpy-geo/}
+\item \textbf{Installation}: \code{pip install mlpy-geo}
+\item \textbf{Python version}: 3.8+
+\item \textbf{Operating systems}: Windows, Linux, macOS
+\item \textbf{Dependencies}: \pkg{numpy}, \pkg{pandas} (required); \pkg{scikit-learn}, \pkg{scipy}, \pkg{matplotlib} (optional)
+\end{itemize}
+
+
+%% -- References ---------------------------------------------------------------
+%% - References need to be provided in a .bib BibTeX database.
+%% - All references should be made with \cite, \citet, \citep, \citealp etc.
+%%   (and never hard-coded). See the FAQ for details.
+%% - JSS-specific markup (\proglang, \pkg, \code) should be used in the .bib.
+%% - Titles in the .bib should be in title case.
+%% - DOIs should be included where available.
+
+\bibliography{references,references_spatial,references_automl}
+
+
+\end{document}

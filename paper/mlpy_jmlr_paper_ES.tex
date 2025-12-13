@@ -1,0 +1,546 @@
+\documentclass[twoside,11pt]{article}
+
+% Required packages
+\usepackage{jmlr2e}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Code listing style
+\lstset{
+    language=Python,
+    basicstyle=\small\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray}
+}
+
+% JMLR heading
+% Arguments: {volume}{year}{pages}{date submitted}{date published}{paper id}{author-full-names}
+\jmlrheading{1}{2025}{1-30}{1/25}{10/25}{25-0000}{Francisco Parra O.}
+
+% Short headings for running headers
+\ShortHeadings{MLPY: Un Framework ML Modular para Python}{Parra}
+
+% Page numbering
+\firstpageno{1}
+
+\begin{document}
+
+\title{MLPY: Un Framework Modular y Extensible de Aprendizaje Automático para Python}
+
+\author{\name Francisco Parra O. \email francisco.parra.o@usach.cl \\
+       \addr Departamento de [TU DEPARTAMENTO]\\
+       Universidad de Santiago de Chile\\
+       Santiago, Chile}
+
+\editor{[Será asignado por JMLR]}
+
+\maketitle
+
+\begin{abstract}
+El aprendizaje automático en Python está dominado por frameworks monolíticos que, si bien son poderosos, carecen de la modularidad y composabilidad necesarias para flujos de trabajo modernos de ML. Presentamos MLPY, un framework modular y extensible inspirado en los principios de diseño de mlr3, que aporta composabilidad orientada a objetos al ecosistema ML de Python. MLPY proporciona abstracciones unificadas para tareas, aprendices, medidas y estrategias de remuestreo, permitiendo flujos de trabajo complejos de ML con código mínimo. A diferencia de frameworks existentes, MLPY incluye soporte nativo para aprendizaje automático espacial con validación cruzada espacialmente consciente y validación automática de datos. Los benchmarks muestran que MLPY logra rendimiento comparable a scikit-learn mientras proporciona una API más modular y flexible. El framework es código abierto bajo licencia Apache 2.0 y está disponible en \url{https://github.com/franciscoparrao/mlpy}.
+\end{abstract}
+
+\begin{keywords}
+  Machine Learning, Python, Framework, Modularidad, ML Espacial, MLOps, AutoML
+\end{keywords}
+
+%===============================================================================
+\section{Introducción}
+\label{sec:intro}
+%===============================================================================
+
+El aprendizaje automático se ha convertido en una piedra angular del análisis de datos moderno, con Python emergiendo como el lenguaje dominante para aplicaciones de ML. Sin embargo, los frameworks actuales de ML en Python enfrentan limitaciones significativas en modularidad y composabilidad.
+
+\subsection{Motivación}
+
+La biblioteca scikit-learn \citep{pedregosa2011scikit}, si bien es excelente para tareas básicas, adopta un diseño monolítico donde el preprocesamiento, modelado y evaluación están estrechamente acoplados. Esto dificulta:
+%
+\begin{itemize}
+  \item Componer pipelines complejos de ML a partir de componentes reutilizables
+  \item Comparar sistemáticamente múltiples aprendices en múltiples conjuntos de datos
+  \item Extender el framework con componentes personalizados sin violar abstracciones
+  \item Manejar tareas especializadas como ML espacial o análisis de series temporales
+\end{itemize}
+
+En contraste, el ecosistema R ha adoptado exitosamente diseños modulares. El framework mlr3 \citep{lang2019mlr3} demuestra cómo las abstracciones orientadas a objetos pueden simplificar flujos de trabajo complejos de ML mientras mantienen extensibilidad.
+
+\subsection{Contribuciones}
+
+Este artículo presenta MLPY, un framework modular de ML para Python que realiza las siguientes contribuciones:
+%
+\begin{enumerate}
+  \item \textbf{Abstracciones unificadas}: Clases Task, Learner, Measure y Prediction que separan responsabilidades y permiten composición
+  \item \textbf{Pipelines flexibles}: Sistema de pipelines basado en grafos que soporta flujos de trabajo complejos de preprocesamiento
+  \item \textbf{Soporte para ML espacial}: Primer framework de ML en Python con validación cruzada espacial nativa y medidas espacialmente conscientes
+  \item \textbf{Validación de datos}: Sistema de validación automática que detecta problemas comunes de calidad de datos
+  \item \textbf{Extensibilidad}: Puntos de extensión limpios para tareas, aprendices, medidas y operaciones de pipeline personalizados
+\end{enumerate}
+
+El resto de este artículo está organizado de la siguiente manera: la Sección~\ref{sec:related} revisa trabajo relacionado; la Sección~\ref{sec:architecture} describe la arquitectura de MLPY; la Sección~\ref{sec:implementation} discute detalles de implementación; la Sección~\ref{sec:benchmarks} presenta benchmarks; la Sección~\ref{sec:examples} muestra ejemplos de uso; y la Sección~\ref{sec:conclusion} concluye.
+
+%===============================================================================
+\section{Trabajo Relacionado}
+\label{sec:related}
+%===============================================================================
+
+\subsection{Frameworks de ML en Python}
+
+\paragraph{scikit-learn}
+La biblioteca scikit-learn \citep{pedregosa2011scikit} es el estándar de facto para ML en Python. Proporciona una API consistente a través de la interfaz \texttt{fit}/\texttt{predict} e incluye implementaciones de la mayoría de algoritmos comunes de ML. Sin embargo, su diseño monolítico dificulta la composición de flujos de trabajo complejos. Por ejemplo, comparar múltiples modelos en múltiples conjuntos de datos requiere código boilerplate significativo (ver Sección~\ref{sec:benchmarks}).
+
+\paragraph{PyCaret}
+PyCaret \citep{pycaret} se enfoca en AutoML y flujos de trabajo de ML con poco código. Si bien simplifica tareas comunes, sacrifica flexibilidad y es menos adecuado para investigación o flujos de trabajo personalizados.
+
+\paragraph{H2O}
+H2O \citep{h2o} es una plataforma empresarial de ML con bindings de Python. Sobresale en computación distribuida pero tiene un núcleo propietario y extensibilidad limitada.
+
+\subsection{Frameworks de ML en R}
+
+\paragraph{mlr3}
+El framework mlr3 \citep{lang2019mlr3} fue pionero en el enfoque modular orientado a objetos que MLPY adopta. Proporciona abstracciones limpias para tareas, aprendices, medidas y estrategias de remuestreo. MLPY trae estos principios de diseño a Python mientras agrega características únicas como soporte para ML espacial.
+
+\paragraph{caret}
+El paquete caret \citep{kuhn2008caret} fue un intento temprano de interfaces unificadas de ML en R. Sin embargo, utilizó un diseño funcional en lugar de orientado a objetos, limitando la composabilidad.
+
+\paragraph{tidymodels}
+tidymodels \citep{tidymodels} es un framework moderno de R que sigue los principios del tidyverse. Proporciona excelente integración con herramientas de manipulación de datos pero es específico de R.
+
+\subsection{Comparación}
+
+La Tabla~\ref{tab:comparison} compara MLPY con frameworks relacionados.
+
+\begin{table}[h]
+\centering
+\caption{Comparación de frameworks de ML}
+\label{tab:comparison}
+\begin{tabular}{lcccccc}
+\toprule
+Framework & Lenguaje & Modular & ML Espacial & Pipelines & AutoML & Abierto \\
+\midrule
+scikit-learn & Python & No & No & Limitado & No & Sí \\
+PyCaret & Python & No & No & Sí & Sí & Sí \\
+H2O & Multi & No & No & Sí & Sí & Mixto \\
+mlr3 & R & Sí & Sí & Sí & Sí & Sí \\
+caret & R & Parcial & No & Sí & Sí & Sí \\
+tidymodels & R & Sí & No & Sí & Parcial & Sí \\
+\midrule
+\textbf{MLPY} & \textbf{Python} & \textbf{Sí} & \textbf{Sí} & \textbf{Sí} & \textbf{Sí} & \textbf{Sí} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+MLPY es el único framework de Python que combina modularidad, ML espacial y extensibilidad.
+
+%===============================================================================
+\section{Arquitectura y Diseño}
+\label{sec:architecture}
+%===============================================================================
+
+MLPY sigue un diseño modular orientado a objetos con clara separación de responsabilidades. La Figura~\ref{fig:architecture} muestra la arquitectura general.
+
+% TODO: Add architecture diagram
+% \begin{figure}[h]
+% \centering
+% \includegraphics[width=0.8\textwidth]{figures/architecture.pdf}
+% \caption{Vista general de la arquitectura de MLPY}
+% \label{fig:architecture}
+% \end{figure}
+
+\subsection{Abstracciones Fundamentales}
+
+\paragraph{Task}
+Un Task encapsula un problema de ML con sus datos y metadatos. Proporciona una interfaz consistente para acceder a características, objetivos e índices de filas independientemente de la representación de datos subyacente.
+
+\begin{lstlisting}
+task = TaskClassif(data=df, target='species')
+print(task.feature_names)  # ['sepal_length', 'sepal_width', ...]
+print(task.target_names)   # ['species']
+print(task.class_names)    # ['setosa', 'versicolor', 'virginica']
+\end{lstlisting}
+
+Las subclases de Task se especializan para diferentes tipos de problemas:
+\begin{itemize}
+  \item \texttt{TaskClassif} / \texttt{TaskRegr} --- aprendizaje supervisado
+  \item \texttt{TaskCluster} --- aprendizaje no supervisado
+  \item \texttt{TaskTimeSeries} / \texttt{TaskForecasting} --- datos temporales
+  \item \texttt{TaskClassifSpatial} / \texttt{TaskRegrSpatial} --- datos espaciales
+\end{itemize}
+
+\paragraph{Learner}
+Un Learner envuelve un algoritmo de ML con una interfaz consistente para entrenamiento y predicción. A diferencia de los estimadores con estado de scikit-learn, los learners de MLPY están diseñados para ser clonados y reutilizados de forma segura.
+
+\begin{lstlisting}
+learner = LearnerRandomForestClassifier(n_estimators=100)
+learner.train(task)
+predictions = learner.predict(task)
+\end{lstlisting}
+
+\paragraph{Prediction}
+Un objeto Prediction encapsula las salidas del modelo con metadatos. Almacena valores reales, valores predichos y (opcionalmente) probabilidades de predicción o errores estándar.
+
+\paragraph{Measure}
+Un Measure calcula métricas de rendimiento a partir de predicciones. Las medidas son objetos de primera clase que pueden pasarse a funciones de remuestreo y benchmarking.
+
+\begin{lstlisting}
+measure = MeasureClassifAccuracy()
+score = measure.score(predictions.truth, predictions.response)
+\end{lstlisting}
+
+\subsection{Estrategias de Remuestreo}
+
+MLPY proporciona un sistema flexible de remuestreo para validación cruzada y estimación de rendimiento:
+
+\begin{itemize}
+  \item \texttt{ResamplingCV} --- validación cruzada de k pliegues
+  \item \texttt{ResamplingHoldout} --- división entrenamiento/prueba
+  \item \texttt{ResamplingBootstrap} --- remuestreo bootstrap
+  \item \texttt{SpatialKFold} --- validación cruzada espacial (previene fuga espacial)
+  \item \texttt{SpatialBlockCV} --- CV espacial basada en bloques
+  \item \texttt{SpatialBufferCV} --- CV espacial basada en buffer
+\end{itemize}
+
+La función \texttt{resample()} proporciona una interfaz de alto nivel:
+
+\begin{lstlisting}
+result = resample(
+    task=task,
+    learner=learner,
+    resampling=ResamplingCV(folds=5),
+    measures=[MeasureClassifAccuracy(), MeasureClassifF1()]
+)
+print(result.score('classif.acc', average='mean'))
+\end{lstlisting}
+
+\subsection{Sistema de Pipelines}
+
+MLPY proporciona un sistema de pipelines basado en grafos donde los pasos de preprocesamiento se representan como nodos en un grafo acíclico dirigido (DAG).
+
+\begin{lstlisting}
+from mlpy.pipelines import Graph, PipeOpScale, PipeOpPCA, linear_pipeline
+from mlpy.pipelines.graph_learner import GraphLearner
+
+# Crear grafo de preprocesamiento
+graph = linear_pipeline(
+    PipeOpScale(),
+    PipeOpPCA(n_components=2)
+)
+
+# Combinar con learner
+learner = GraphLearner(graph, LearnerRandomForestClassifier())
+learner.train(task)
+\end{lstlisting}
+
+Este enfoque es más flexible que el Pipeline de scikit-learn, soportando:
+\begin{itemize}
+  \item Ramificación y fusión (métodos de ensamble)
+  \item Operaciones condicionales
+  \item Uniones de características
+  \item Evaluación perezosa
+\end{itemize}
+
+\subsection{Aprendizaje Automático Espacial}
+
+MLPY es el primer framework de ML en Python con soporte nativo para ML espacial. Las tareas espaciales preservan información de coordenadas:
+
+\begin{lstlisting}
+task = TaskRegrSpatial(
+    data=df,
+    target='pollution',
+    coords=['latitude', 'longitude']
+)
+\end{lstlisting}
+
+Las estrategias de remuestreo espacial aseguran independencia espacial entre conjuntos de entrenamiento y prueba, previniendo que la autocorrelación espacial infle las estimaciones de rendimiento (ver Sección~\ref{sec:benchmarks}).
+
+\subsection{Validación de Datos}
+
+MLPY incluye un sistema de validación automática que detecta:
+\begin{itemize}
+  \item Valores faltantes
+  \item Valores infinitos
+  \item Filas duplicadas
+  \item Características con varianza casi nula
+  \item Características categóricas de alta cardinalidad
+  \item Desbalance de etiquetas
+\end{itemize}
+
+Los usuarios pueden envolver cualquier tarea con validación automática:
+
+\begin{lstlisting}
+from mlpy.validation import ValidatedTask
+
+validated = ValidatedTask(task)
+validated.validate()  # Genera warnings/errores para problemas
+\end{lstlisting}
+
+%===============================================================================
+\section{Implementación}
+\label{sec:implementation}
+%===============================================================================
+
+\subsection{Detalles Técnicos}
+
+MLPY está implementado en Python puro con dependencias requeridas mínimas:
+\begin{itemize}
+  \item \textbf{Requeridas}: numpy, pandas
+  \item \textbf{Opcionales}: scikit-learn (para learners de sklearn), matplotlib (para gráficos),
+        scipy (para funciones espaciales), xgboost, lightgbm, catboost (para learners de boosting)
+\end{itemize}
+
+Este diseño permite a los usuarios instalar solo los componentes necesarios, reduciendo el bloat.
+
+\subsection{Dependencias Opcionales}
+
+MLPY utiliza un patrón de importaciones opcionales con banderas de características:
+
+\begin{lstlisting}
+try:
+    from sklearn.ensemble import RandomForestClassifier
+    _HAS_SKLEARN = True
+except ImportError:
+    _HAS_SKLEARN = False
+
+if not _HAS_SKLEARN:
+    raise ImportError("sklearn requerido para LearnerRandomForest")
+\end{lstlisting}
+
+Esto asegura degradación elegante cuando las dependencias opcionales están ausentes.
+
+\subsection{Optimizaciones de Rendimiento}
+
+Las optimizaciones clave de rendimiento incluyen:
+\begin{itemize}
+  \item \textbf{Evaluación perezosa}: Los Tasks solo materializan datos cuando es necesario
+  \item \textbf{Indexación basada en vistas}: Subconjuntar tasks crea vistas, no copias
+  \item \textbf{Remuestreo paralelo}: Los pliegues de validación cruzada se ejecutan en paralelo
+  \item \textbf{Caché eficiente}: Resultados intermedios en caché durante ejecución de pipeline
+\end{itemize}
+
+\subsection{Extensibilidad}
+
+MLPY está diseñado para fácil extensión. Agregar un learner personalizado requiere implementar solo dos métodos:
+
+\begin{lstlisting}
+from mlpy.learners.base import LearnerClassif
+
+class MyCustomLearner(LearnerClassif):
+    def _train(self, task):
+        # Lógica de entrenamiento
+        self.model = train_my_model(task.X, task.y)
+
+    def _predict(self, task):
+        # Lógica de predicción
+        return self.model.predict(task.X)
+\end{lstlisting}
+
+Existen patrones similares para medidas personalizadas, estrategias de remuestreo y operaciones de pipeline.
+
+%===============================================================================
+\section{Benchmarks}
+\label{sec:benchmarks}
+%===============================================================================
+
+Evaluamos MLPY contra scikit-learn en tres dimensiones: rendimiento, usabilidad y capacidades de ML espacial.
+
+\subsection{Comparación de Rendimiento}
+
+% TODO: Add performance results table
+% La Tabla~\ref{tab:performance} muestra tiempos de entrenamiento en datasets UCI.
+
+Comparamos MLPY y scikit-learn en datasets estándar:
+\begin{itemize}
+  \item Iris (150 muestras, 4 características, 3 clases)
+  \item Wine (178 muestras, 13 características, 3 clases)
+  \item Breast Cancer (569 muestras, 30 características, 2 clases)
+  \item Diabetes (442 muestras, 10 características, regresión)
+\end{itemize}
+
+\textbf{Hallazgos clave}:
+\begin{itemize}
+  \item El overhead de MLPY es mínimo (1.1--1.3x más lento que sklearn)
+  \item El rendimiento es comparable para aplicaciones prácticas
+  \item El uso de memoria es similar
+  \item La precisión de predicción es idéntica (ambos usan implementaciones de sklearn)
+\end{itemize}
+
+% TODO: Add performance plot
+% Ver Figura~\ref{fig:performance} para resultados detallados.
+
+\subsection{Comparación de Usabilidad}
+
+Comparamos líneas de código (LOC) para tareas comunes de ML.
+
+% TODO: Add usability table
+% Ver Tabla~\ref{tab:usability}.
+
+\textbf{Hallazgos clave}:
+\begin{itemize}
+  \item Entrenamiento simple: LOC comparable
+  \item Validación cruzada: MLPY reduce código en ~40\%
+  \item Pipelines: MLPY reduce código en ~30\%
+  \item Benchmarking: MLPY reduce código en ~60\%
+  \item Ajuste de hiperparámetros: LOC comparable
+\end{itemize}
+
+Las mayores mejoras provienen de las funciones de alto nivel \texttt{resample()} y \texttt{benchmark()} de MLPY, que eliminan código boilerplate.
+
+% Estudio de Caso ML Espacial - Subsección completa con datos reales
+\input{section_spatial_ml_case_study}
+
+% Ajuste Automático de Hiperparámetros AutoML - Espacios de parámetros declarativos
+\input{section_automl_tuning}
+
+%===============================================================================
+\section{Ejemplos de Uso}
+\label{sec:examples}
+%===============================================================================
+
+\subsection{Flujo de Trabajo Simple de Clasificación}
+
+\begin{lstlisting}
+from mlpy.tasks import TaskClassif
+from mlpy.learners.sklearn import LearnerRandomForestClassifier
+from mlpy.measures import MeasureClassifAccuracy
+from sklearn import datasets
+
+# Cargar datos y crear task
+iris = datasets.load_iris()
+task = TaskClassif(data=iris.data, target=iris.target)
+
+# Entrenar y predecir
+learner = LearnerRandomForestClassifier()
+learner.train(task)
+predictions = learner.predict(task)
+
+# Evaluar
+measure = MeasureClassifAccuracy()
+accuracy = measure.score(predictions.truth, predictions.response)
+print(f"Accuracy: {accuracy:.3f}")
+\end{lstlisting}
+
+\subsection{Validación Cruzada}
+
+\begin{lstlisting}
+from mlpy import resample
+from mlpy.resamplings import ResamplingCV
+
+result = resample(
+    task=task,
+    learner=learner,
+    resampling=ResamplingCV(folds=5),
+    measures=[MeasureClassifAccuracy()]
+)
+print(f"CV Accuracy: {result.score('classif.acc', average='mean'):.3f}")
+\end{lstlisting}
+
+\subsection{Benchmarking de Múltiples Learners}
+
+\begin{lstlisting}
+from mlpy import benchmark
+from mlpy.learners.sklearn import (
+    LearnerRandomForestClassifier,
+    LearnerLogisticRegression,
+    LearnerSVM
+)
+
+learners = [
+    LearnerRandomForestClassifier(),
+    LearnerLogisticRegression(),
+    LearnerSVM()
+]
+
+result = benchmark(
+    tasks=[task],
+    learners=learners,
+    resamplings=ResamplingCV(folds=5),
+    measures=[MeasureClassifAccuracy(), MeasureClassifF1()]
+)
+\end{lstlisting}
+
+\subsection{Validación Cruzada Espacial}
+
+\begin{lstlisting}
+from mlpy.tasks import TaskRegrSpatial
+from mlpy.resamplings.spatial import SpatialKFold
+
+# Crear task espacial
+task = TaskRegrSpatial(
+    data=df,
+    target='pollution',
+    coords=['lat', 'lon']
+)
+
+# CV espacial
+result = resample(
+    task=task,
+    learner=LearnerRandomForestRegressor(),
+    resampling=SpatialKFold(n_splits=5),
+    measures=[MeasureRegrRMSE()]
+)
+\end{lstlisting}
+
+%===============================================================================
+\section{Conclusión y Trabajo Futuro}
+\label{sec:conclusion}
+%===============================================================================
+
+Presentamos MLPY, un framework modular y extensible de ML para Python inspirado en los principios de diseño de mlr3. MLPY proporciona abstracciones unificadas para tareas, aprendices, medidas y estrategias de remuestreo, permitiendo flujos de trabajo complejos de ML con código mínimo. Las contribuciones clave incluyen soporte nativo para ML espacial y validación automática de datos --- características no disponibles en otros frameworks de Python.
+
+Los benchmarks demuestran que MLPY logra rendimiento comparable a scikit-learn mientras proporciona modularidad y usabilidad superiores para flujos de trabajo complejos.
+
+\subsection{Limitaciones}
+
+Las limitaciones actuales incluyen:
+\begin{itemize}
+  \item Soporte limitado para deep learning (trabajo futuro)
+  \item Aún no hay backend de computación distribuida
+  \item El remuestreo espacial requiere scipy
+\end{itemize}
+
+\subsection{Trabajo Futuro}
+
+El trabajo futuro planificado incluye:
+\begin{itemize}
+  \item Integración de PyTorch/TensorFlow para deep learning
+  \item Backends Dask/Ray para computación distribuida
+  \item Capacidades mejoradas de AutoML
+  \item Soporte extendido para series temporales
+  \item Integración con MLflow para seguimiento de experimentos
+\end{itemize}
+
+%===============================================================================
+\section{Disponibilidad del Software}
+\label{sec:software}
+%===============================================================================
+
+\begin{itemize}
+\item \textbf{Nombre del software}: MLPY
+\item \textbf{Versión}: 0.1.0
+\item \textbf{Licencia}: Apache License 2.0
+\item \textbf{Repositorio}: \url{https://github.com/franciscoparrao/mlpy}
+\item \textbf{PyPI}: \url{https://pypi.org/project/mlpy-geo/} (por publicar)
+\item \textbf{Documentación}: \url{https://mlpy.readthedocs.io/} (por publicar)
+\item \textbf{Versión Python}: 3.8+
+\item \textbf{Sistemas operativos}: Windows, Linux, macOS
+\item \textbf{Dependencias}: numpy, pandas (requeridas); scikit-learn, scipy, matplotlib (opcionales)
+\end{itemize}
+
+\acks{Agradecimientos si los hay.}
+
+% Bibliografía
+\bibliography{references,references_spatial,references_automl}
+
+\end{document}

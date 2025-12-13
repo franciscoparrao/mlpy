@@ -1,0 +1,152 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\orcidauthor{0009-0006-0435-1854}{Francisco Parra O.}
+\emailauthor{francisco.parra.o@usach.cl}{Francisco Parra O.}
+\orcidauthor{0009-0002-9854-1456}{Giuseppe Cavallieri}
+\emailauthor{giuseppe.cavallieri@usach.cl}{Giuseppe Cavallieri}
+\citation{hengl2018random}
+\citation{rodriguez2018machine}
+\citation{zuo2019machine}
+\citation{liakos2018machine}
+\citation{reichenbach2018review}
+\citation{tobler1970computer}
+\citation{goovaerts1997geostatistics,webster2007geostatistics}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
+\citation{roberts2017cross,meyer2018improving}
+\citation{ploton2020spatial}
+\citation{schratz2019hyperparameter}
+\citation{valavi2019blockcv}
+\citation{lang2019mlr3}
+\citation{rikken1996geostatistics}
+\citation{legendre1993spatial}
+\citation{moran1950notes}
+\citation{goovaerts1997geostatistics}
+\citation{matheron1963principles}
+\citation{roberts2017cross}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Background: Spatial Autocorrelation in Geosciences}{3}{section.2}\protected@file@percent }
+\newlabel{sec:background}{{2}{3}{Background: Spatial Autocorrelation in Geosciences}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Tobler's Law and Spatial Structure}{3}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Variograms and Spatial Dependence}{3}{subsection.2.2}\protected@file@percent }
+\citation{meyer2018improving,ploton2020spatial,wadoux2021spatial}
+\citation{valavi2019blockcv}
+\citation{schratz2019hyperparameter}
+\citation{brenning2012spatial}
+\citation{kelsey2020geopandas}
+\citation{rey2010pysal}
+\citation{malicke2021scikit}
+\citation{pedregosa2011scikit}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Implications for Machine Learning Validation}{4}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Related Work}{4}{section.3}\protected@file@percent }
+\newlabel{sec:related}{{3}{4}{Related Work}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Spatial Cross-Validation in R}{4}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Python Geospatial Ecosystem}{4}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Gap Analysis}{4}{subsection.3.3}\protected@file@percent }
+\citation{lang2019mlr3}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Spatial cross-validation support across frameworks}}{5}{table.1}\protected@file@percent }
+\newlabel{tab:gap}{{1}{5}{Spatial cross-validation support across frameworks}{table.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}The MLPY Framework}{5}{section.4}\protected@file@percent }
+\newlabel{sec:framework}{{4}{5}{The MLPY Framework}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Core Components for Spatial ML}{5}{subsection.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces MLPY framework architecture showing the modular design with five layers: high-level API (resample, benchmark), core components (Tasks, Learners, Resamplings, Measures), additional modules (AutoML, Pipelines, Backends), utilities, and typical workflow. Spatial ML functionality is highlighted through SpatialKFold, SpatialBlockCV, and TaskRegrSpatial/TaskClassifSpatial components.}}{6}{figure.1}\protected@file@percent }
+\newlabel{fig:architecture}{{1}{6}{MLPY framework architecture showing the modular design with five layers: high-level API (resample, benchmark), core components (Tasks, Learners, Resamplings, Measures), additional modules (AutoML, Pipelines, Backends), utilities, and typical workflow. Spatial ML functionality is highlighted through SpatialKFold, SpatialBlockCV, and TaskRegrSpatial/TaskClassifSpatial components}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Example Usage}{6}{subsection.4.2}\protected@file@percent }
+\citation{rikken1996geostatistics}
+\citation{pebesma2004multivariable}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Case Study: Heavy Metal Contamination in the Meuse River Floodplain}{7}{section.5}\protected@file@percent }
+\newlabel{sec:case-study}{{5}{7}{Case Study: Heavy Metal Contamination in the Meuse River Floodplain}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Study Area and Dataset}{7}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Moran's I statistics for heavy metal contamination}}{8}{table.2}\protected@file@percent }
+\newlabel{tab:morans}{{2}{8}{Moran's I statistics for heavy metal contamination}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Spatial Autocorrelation Analysis}{8}{subsection.5.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Spatial distribution of zinc contamination in the Meuse River floodplain. Point size and color represent zinc concentration (ppm). Higher concentrations occur near the river, demonstrating clear spatial structure.}}{8}{figure.2}\protected@file@percent }
+\newlabel{fig:spatial-dist}{{2}{8}{Spatial distribution of zinc contamination in the Meuse River floodplain. Point size and color represent zinc concentration (ppm). Higher concentrations occur near the river, demonstrating clear spatial structure}{figure.2}{}}
+\citation{breiman2001random}
+\citation{hengl2018random}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Empirical variogram for zinc concentration showing spatial dependence structure. Semivariance increases with distance up to approximately 800--1000m (the range), beyond which observations become spatially independent. The relatively low nugget indicates strong spatial structure.}}{9}{figure.3}\protected@file@percent }
+\newlabel{fig:variogram}{{3}{9}{Empirical variogram for zinc concentration showing spatial dependence structure. Semivariance increases with distance up to approximately 800--1000m (the range), beyond which observations become spatially independent. The relatively low nugget indicates strong spatial structure}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Model Development}{9}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Cross-Validation Strategies Compared}{9}{subsection.5.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Cross-validation performance comparison for zinc prediction}}{10}{table.3}\protected@file@percent }
+\newlabel{tab:cv-results}{{3}{10}{Cross-validation performance comparison for zinc prediction}{table.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Visualization of 5-fold spatial cross-validation partitioning. Different colors represent different folds. Note the geographic separation between folds, ensuring test observations are spatially distant from training data.}}{10}{figure.4}\protected@file@percent }
+\newlabel{fig:spatial-folds}{{4}{10}{Visualization of 5-fold spatial cross-validation partitioning. Different colors represent different folds. Note the geographic separation between folds, ensuring test observations are spatially distant from training data}{figure.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Results: Performance Comparison}{10}{subsection.5.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Comparison of RMSE values from standard cross-validation versus spatial cross-validation. Standard CV systematically underestimates prediction error by 31\%, highlighting the importance of spatial validation for geoscience applications.}}{11}{figure.5}\protected@file@percent }
+\newlabel{fig:cv-comparison}{{5}{11}{Comparison of RMSE values from standard cross-validation versus spatial cross-validation. Standard CV systematically underestimates prediction error by 31\%, highlighting the importance of spatial validation for geoscience applications}{figure.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Sensitivity analysis: RMSE across different k-fold configurations}}{11}{table.4}\protected@file@percent }
+\newlabel{tab:sensitivity}{{4}{11}{Sensitivity analysis: RMSE across different k-fold configurations}{table.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Sensitivity Analysis}{11}{subsection.5.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Practical Implications for Environmental Assessment}{11}{subsection.5.7}\protected@file@percent }
+\citation{goovaerts1997geostatistics}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Case Study 2: Mineral Prospectivity Mapping in Swiss Jura}{12}{section.6}\protected@file@percent }
+\newlabel{sec:case-study-jura}{{6}{12}{Case Study 2: Mineral Prospectivity Mapping in Swiss Jura}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Study Area and Dataset}{12}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Spatial Autocorrelation Analysis}{12}{subsection.6.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Spatial distribution of copper concentration in Swiss Jura topsoil. Point size and color represent copper concentration (mg/kg). Spatial patterns reflect geological formations rather than a single dominant source like river flooding in the Meuse case.}}{13}{figure.6}\protected@file@percent }
+\newlabel{fig:jura-spatial-dist}{{6}{13}{Spatial distribution of copper concentration in Swiss Jura topsoil. Point size and color represent copper concentration (mg/kg). Spatial patterns reflect geological formations rather than a single dominant source like river flooding in the Meuse case}{figure.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Model Development and Validation}{13}{subsection.6.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Visualization of 5-fold spatial cross-validation partitioning for the Jura dataset. Colors represent different folds. Geographic separation ensures test observations are spatially distant from training data.}}{14}{figure.7}\protected@file@percent }
+\newlabel{fig:jura-spatial-folds}{{7}{14}{Visualization of 5-fold spatial cross-validation partitioning for the Jura dataset. Colors represent different folds. Geographic separation ensures test observations are spatially distant from training data}{figure.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Cross-validation performance comparison for copper prediction (Jura dataset)}}{14}{table.5}\protected@file@percent }
+\newlabel{tab:jura-cv-results}{{5}{14}{Cross-validation performance comparison for copper prediction (Jura dataset)}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Results: Performance Comparison}{14}{subsection.6.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Comparison of RMSE values from standard versus spatial cross-validation for the Jura dataset. Standard CV underestimates error by 5.1\%, a smaller but still meaningful bias compared to the Meuse case.}}{15}{figure.8}\protected@file@percent }
+\newlabel{fig:jura-cv-comparison}{{8}{15}{Comparison of RMSE values from standard versus spatial cross-validation for the Jura dataset. Standard CV underestimates error by 5.1\%, a smaller but still meaningful bias compared to the Meuse case}{figure.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Cross-domain comparison of spatial cross-validation results}}{15}{table.6}\protected@file@percent }
+\newlabel{tab:cross-domain}{{6}{15}{Cross-domain comparison of spatial cross-validation results}{table.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Comparative Analysis and Methodological Insights}{15}{section.7}\protected@file@percent }
+\newlabel{sec:comparative}{{7}{15}{Comparative Analysis and Methodological Insights}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Cross-Domain Validation of Spatial Leakage}{15}{subsection.7.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Performance comparison: Machine Learning vs. Ordinary Kriging}}{16}{table.7}\protected@file@percent }
+\newlabel{tab:kriging-comparison}{{7}{16}{Performance comparison: Machine Learning vs. Ordinary Kriging}{table.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Comparison with Geostatistical Approaches}{16}{subsection.7.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Performance comparison between machine learning (with spatial CV) and Ordinary Kriging across both case studies. Kriging achieves lower RMSE as expected for spatial interpolation, but Random Forest with spatial CV remains competitive while offering complementary advantages in feature handling and scalability.}}{17}{figure.9}\protected@file@percent }
+\newlabel{fig:ml-vs-kriging}{{9}{17}{Performance comparison between machine learning (with spatial CV) and Ordinary Kriging across both case studies. Kriging achieves lower RMSE as expected for spatial interpolation, but Random Forest with spatial CV remains competitive while offering complementary advantages in feature handling and scalability}{figure.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Practical Guidelines for Geocientists}{17}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Practical Guidelines: When to Use Spatial Cross-Validation}{18}{section.8}\protected@file@percent }
+\newlabel{sec:guidelines}{{8}{18}{Practical Guidelines: When to Use Spatial Cross-Validation}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Decision Framework}{18}{subsection.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Implementation with MLPY}{18}{subsection.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Recommendations by Application Domain}{19}{subsection.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Discussion}{19}{section.9}\protected@file@percent }
+\newlabel{sec:discussion}{{9}{19}{Discussion}{section.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Limitations}{19}{subsection.9.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Integration with Existing Workflows}{20}{subsection.9.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Future Directions}{20}{subsection.9.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion}{20}{section.10}\protected@file@percent }
+\newlabel{sec:conclusion}{{10}{20}{Conclusion}{section.10}{}}
+\citation{pebesma2005classes}
+\bibstyle{cas-model2-names}
+\bibdata{references,references_spatial}
+\bibcite{breiman2001random}{{1}{2001}{{Breiman}}{{}}}
+\bibcite{brenning2012spatial}{{2}{2012}{{Brenning}}{{}}}
+\bibcite{goovaerts1997geostatistics}{{3}{1997}{{Goovaerts}}{{}}}
+\bibcite{hengl2018random}{{4}{2018}{{Hengl et~al.}}{{Hengl, Nussbaum, Wright, Heuvelink and Gr{\"a}ler}}}
+\bibcite{kelsey2020geopandas}{{5}{2020}{{Jordahl et~al.}}{{Jordahl, den Bossche, Fleischmann, Wasserman, McBride, Gerard, Tratner, Perry, Badaracco, Farmer et~al.}}}
+\bibcite{lang2019mlr3}{{6}{2019}{{Lang et~al.}}{{Lang, Binder, Richter, Schratz, Pfisterer, Coors, Au, Casalicchio, Kotthoff and Bischl}}}
+\bibcite{legendre1993spatial}{{7}{1993}{{Legendre}}{{}}}
+\bibcite{liakos2018machine}{{8}{2018}{{Liakos et~al.}}{{Liakos, Busato, Moshou, Pearson and Bochtis}}}
+\bibcite{malicke2021scikit}{{9}{2022}{{M{\"a}licke et~al.}}{{M{\"a}licke, Schneider, Schr{\"o}der and Zech}}}
+\bibcite{matheron1963principles}{{10}{1963}{{Matheron}}{{}}}
+\bibcite{meyer2018improving}{{11}{2018}{{Meyer et~al.}}{{Meyer, Reudenbach, Hengl, Katurji and Nauss}}}
+\bibcite{moran1950notes}{{12}{1950}{{Moran}}{{}}}
+\bibcite{pebesma2004multivariable}{{13}{2004}{{Pebesma}}{{}}}
+\bibcite{pebesma2005classes}{{14}{2005}{{Pebesma and Bivand}}{{}}}
+\bibcite{pedregosa2011scikit}{{15}{2011}{{Pedregosa et~al.}}{{Pedregosa, Varoquaux, Gramfort, Michel, Thirion, Grisel, Blondel, Prettenhofer, Weiss, Dubourg et~al.}}}
+\bibcite{ploton2020spatial}{{16}{2020}{{Ploton et~al.}}{{Ploton, Mortier, R{\'e}jou-M{\'e}chain, Barbier, Picard, Rossi, Dormann, Cornu, Viennois, Bayol et~al.}}}
+\bibcite{reichenbach2018review}{{17}{2018}{{Reichenbach et~al.}}{{Reichenbach, Rossi, Malamud, Mihir and Guzzetti}}}
+\bibcite{rey2010pysal}{{18}{2010}{{Rey and Anselin}}{{}}}
+\bibcite{rikken1996geostatistics}{{19}{1996}{{Rikken and Van~Rijn}}{{}}}
+\bibcite{roberts2017cross}{{20}{2017}{{Roberts et~al.}}{{Roberts, Bahn, Ciuti, Boyce, Elith, Guillera-Arroita, Hauenstein, Lahoz-Monfort, Schr{\"o}der, Thuiller et~al.}}}
+\bibcite{rodriguez2018machine}{{21}{2015}{{Rodriguez-Galiano et~al.}}{{Rodriguez-Galiano, Sanchez-Castillo, Chica-Olmo and Chica-Rivas}}}
+\bibcite{schratz2019hyperparameter}{{22}{2019}{{Schratz et~al.}}{{Schratz, Muenchow, Iturritxa, Richter and Brenning}}}
+\bibcite{tobler1970computer}{{23}{1970}{{Tobler}}{{}}}
+\bibcite{valavi2019blockcv}{{24}{2019}{{Valavi et~al.}}{{Valavi, Elith, Lahoz-Monfort and Guillera-Arroita}}}
+\bibcite{wadoux2021spatial}{{25}{2021}{{Wadoux et~al.}}{{Wadoux, Brus and Heuvelink}}}
+\bibcite{webster2007geostatistics}{{26}{2007}{{Webster and Oliver}}{{}}}
+\bibcite{zuo2019machine}{{27}{2017}{{Zuo and Xu}}{{}}}
+\csxdef{lastpage}{24}
+\gdef \@abspage@last{26}
