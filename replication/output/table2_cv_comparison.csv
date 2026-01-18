@@ -1,0 +1,4 @@
+Method,RMSE_ppm,Underestimation
+sklearn CV,221.7,31.0%
+MLPY standard CV,233.5,27.4%
+MLPY Spatial K-Fold,321.5,---

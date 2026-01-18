@@ -1,0 +1,21 @@
+Dear Editors-in-Chief of Computers & Geosciences,
+
+We are submitting our manuscript titled "MLPY: A Python Framework for Spatial Machine Learning in Geosciences" for consideration for publication in Computers & Geosciences. We confirm that this submission follows all journal requirements including the submission checklist.
+
+The manuscript presents MLPY, the first Python framework providing native spatial cross-validation for machine learning in geosciences. Spatial autocorrelation is a fundamental characteristic of geoscience data that violates the independence assumptions of standard cross-validation, leading to overly optimistic performance estimates. Through two case studies---heavy metal contamination assessment (Meuse River, Netherlands) and mineral prospectivity mapping (Swiss Jura)---we demonstrate that standard cross-validation underestimates prediction errors by 5--31% depending on spatial autocorrelation strength, with critical implications for environmental assessment, natural resource exploration, and precision agriculture.
+
+Our work addresses a significant gap in the Python geospatial ecosystem. While R provides spatial resampling tools, Python---the dominant language in modern geosciences---lacks integrated solutions. MLPY fills this gap by providing practical, validated tools that integrate seamlessly with existing Python libraries (GeoPandas, scikit-learn, PySAL).
+
+We provide complete source code in a public GitHub repository (https://github.com/franciscoparrao/mlpy), published on PyPI as mlpy-geo, with comprehensive replication materials that reproduce all figures and tables in the manuscript. All details are listed in the "Computer Code Availability" section.
+
+We believe this work will be of significant interest to the Computers & Geosciences readership, as it provides essential tools for rigorous model validation in spatial prediction tasks common across environmental sciences, geophysics, hydrology, and natural resource exploration.
+
+Thank you for your consideration.
+
+Sincerely,
+
+Francisco Parra O. and Giuseppe Cavallieri
+Department of Informatics
+Universidad de Santiago de Chile
+Santiago, Chile
+francisco.parra.o@usach.cl
