@@ -8,6 +8,13 @@ comparing standard CV vs spatial CV for copper concentration prediction.
 Dataset: Based on Goovaerts (1997) - Swiss Jura topsoil geochemistry
 Reference: Goovaerts, P. 1997. Geostatistics for Natural Resources Evaluation.
            Oxford Univ. Press, Appendix C.
+
+IMPORTANT: This script must be run from the mlpy/ directory (repository root).
+Follow the instructions in case_studies/README.md for proper execution.
+
+Usage:
+    cd mlpy/
+    python case_studies/jura_case_study_mlpy.py
 """
 
 import numpy as np

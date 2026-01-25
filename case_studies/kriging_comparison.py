@@ -8,6 +8,13 @@ Demonstrates:
 1. Ordinary Kriging as baseline geostatistical method
 2. Comparison with Random Forest + Standard CV
 3. Comparison with Random Forest + Spatial CV
+
+IMPORTANT: This script must be run from the mlpy/ directory (repository root).
+Follow the instructions in case_studies/README.md for proper execution.
+
+Usage:
+    cd mlpy/
+    python case_studies/kriging_comparison.py
 """
 
 import numpy as np
