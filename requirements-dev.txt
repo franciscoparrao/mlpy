@@ -26,3 +26,4 @@ seaborn>=0.12.0
 joblib>=1.2.0
 shap>=0.41.0
 lime>=0.2.0
+pykrige>=1.6.0

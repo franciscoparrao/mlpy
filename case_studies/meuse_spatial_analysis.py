@@ -8,6 +8,13 @@ on the Meuse dataset to demonstrate:
 3. Solution using spatial cross-validation (MLPY's unique capability)
 
 Results will be used in JMLR paper Section 5.4.
+
+IMPORTANT: This script must be run from the mlpy/ directory (repository root).
+Follow the instructions in case_studies/README.md for proper execution.
+
+Usage:
+    cd mlpy/
+    python case_studies/meuse_spatial_analysis.py
 """
 
 import numpy as np
@@ -26,7 +33,7 @@ from mlpy.tasks import TaskRegr, TaskRegrSpatial
 from mlpy.learners.sklearn import LearnerRandomForestRegressor
 from mlpy.measures import MeasureRegrRMSE, MeasureRegrMAE, MeasureRegrR2
 from mlpy.resamplings import ResamplingCV
-from mlpy import resample
+from mlpy.resample import resample
 
 # Import spatial resampling
 try:
@@ -276,7 +283,7 @@ def run_complete_analysis():
     print()
 
     # Create output directories
-    output_dir = Path('results')
+    output_dir = Path('case_studies/results')
     output_dir.mkdir(exist_ok=True)
 
     # Load dataset

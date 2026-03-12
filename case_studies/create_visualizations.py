@@ -8,6 +8,13 @@ Generates publication-quality figures (300 DPI, PDF) for JMLR paper:
 4. Spatial folds visualization
 
 All figures saved to case_studies/plots/
+
+IMPORTANT: This script must be run from the mlpy/ directory (repository root).
+Follow the instructions in case_studies/README.md for proper execution.
+
+Usage:
+    cd mlpy/
+    python case_studies/create_visualizations.py
 """
 
 import numpy as np
@@ -63,7 +70,7 @@ COLORS = {
 
 def create_output_directory():
     """Create output directory for plots."""
-    output_dir = Path('plots')
+    output_dir = Path('case_studies/plots')
     output_dir.mkdir(exist_ok=True)
     return output_dir
 
@@ -257,7 +264,7 @@ def figure3_cv_comparison(output_dir):
 
     # Load results
     import json
-    results_file = Path('results') / 'meuse_analysis_results.json'
+    results_file = Path('case_studies/results') / 'meuse_analysis_results.json'
     with open(results_file, 'r') as f:
         results = json.load(f)
 
