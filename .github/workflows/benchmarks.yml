@@ -159,7 +159,7 @@ jobs:
         echo '- TGPY integration available (if installed)' >> benchmark_report.md
     
     - name: Upload benchmark results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v5
       with:
         name: benchmark-report
         path: benchmark_report.md
